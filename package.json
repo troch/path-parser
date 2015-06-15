@@ -1,0 +1,31 @@
+{
+  "name": "path-parser",
+  "version": "0.0.0",
+  "description": "A small utility to parse paths",
+  "main": "index.js",
+  "scripts": {
+    "test": "_mocha",
+    "build": "./node_modules/.bin/babel -m common lib/Path.js > index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/troch/path-parser.git"
+  },
+  "keywords": [
+    "parser",
+    "path",
+    "url",
+    "regex"
+  ],
+  "author": "Thomas Roch",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/troch/path-parser/issues"
+  },
+  "homepage": "https://github.com/troch/path-parser",
+  "devDependencies": {
+    "should": "^6.0.3",
+    "mocha": "^2.2.5",
+    "babel": "^5.5.8"
+  }
+}

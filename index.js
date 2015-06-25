@@ -18,7 +18,7 @@ var rules = [{
     // Url parameter (splat)
     name: 'url-parameter-splat',
     pattern: /^\*([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
-    regex: /(.*?)/
+    regex: /([^\?]*)/
 }, {
     // Query parameter: ?param1&param2
     //                   ?:param1&:param2
@@ -27,7 +27,7 @@ var rules = [{
 }, {
     // Delimiter /
     name: 'delimiter',
-    pattern: /^(\/|\?|\#)/,
+    pattern: /^(\/|\?|#)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }

@@ -44,4 +44,11 @@ describe('Path', function () {
         // Successful match
         path.match('/users/profile/view/123').should.eql({ splat: 'profile/view', id: '123' });
     });
+
+    it('should match build paths with url, splat and query parameters', function () {
+        var path = new Path('/:section/*splat?id');
+        path.hasSpatParam.should.be.true;
+        // Successful match
+        path.match('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
+    })
 });

@@ -27,6 +27,7 @@ describe('Path', function () {
 
     it('should match build paths with url and query parameters', function () {
         var path = new Path('/users/profile/:id-:id2?:id3');
+        path.hasQueryParams.should.be.true;
         // Successful match & partial match
         path.match('/users/profile/123-456?id3=789').should.eql({ id: '123', id2: '456', id3: '789' });
         path.partialMatch('/users/profile/123-456').should.eql({ id: '123', id2: '456' });
@@ -39,7 +40,8 @@ describe('Path', function () {
 
     it('should match build paths with splat parameters', function () {
         var path = new Path('/users/*splat/:id');
-
+        path.hasSpatParam.should.be.true;
+        // Successful match
         path.match('/users/profile/view/123').should.eql({ splat: 'profile/view', id: '123' });
     });
 });

@@ -16,7 +16,7 @@ var rules = [{
     regex: /([a-zA-Z0-9-_.~]+)/
 }, {
     // Url parameter (splat)
-    name: 'url-parameter',
+    name: 'url-parameter-splat',
     pattern: /^\*([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
     regex: /(.*?)/
 }, {
@@ -82,14 +82,17 @@ var Path = (function () {
         this.tokens = tokenise(path);
 
         this.hasUrlParams = this.tokens.filter(function (t) {
-            return t.type === 'url-parameter';
+            return /url-parameter/.test(t.type);
+        }).length > 0;
+        this.hasSpatParam = this.tokens.filter(function (t) {
+            return /splat/.test(t.type);
         }).length > 0;
         this.hasQueryParams = this.tokens.filter(function (t) {
             return t.type === 'query-parameter';
         }).length > 0;
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens.filter(function (t) {
-            return t.type === 'url-parameter';
+            return /url-parameter/.test(t.type);
         }).map(function (t) {
             return t.val;
         })

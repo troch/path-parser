@@ -15,6 +15,11 @@ var rules = [{
     pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
     regex: /([a-zA-Z0-9-_.~]+)/
 }, {
+    // Url parameter (splat)
+    name: 'url-parameter',
+    pattern: /^\*([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
+    regex: /(.*?)/
+}, {
     // Query parameter: ?param1&param2
     //                   ?:param1&:param2
     name: 'query-parameter',

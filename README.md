@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/troch/path-parser.svg)](https://travis-ci.org/troch/path-parser)
+
 # path-parser
 
 A small utility to parse and build paths. It can be used to partially or fully

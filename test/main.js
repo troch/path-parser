@@ -12,13 +12,28 @@ describe('Path', function () {
         }).should.throw();
     });
 
-    it('should parse a path into tokens', function () {
+    it('should match paths', function () {
         var path = new Path('/users/profile/:id-:id2.html');
-
+        // Successful match & partial match
         path.match('/users/profile/123-abc.html').should.eql({ id: '123', id2: 'abc' });
-        path.match('/users/profile/123-abc.html?what').should.be.false;
         path.partialMatch('/users/profile/123-abc.html?what').should.eql({ id: '123', id2: 'abc' });
+        // Unsuccessful match
+        path.match('/users/details/123-abc').should.be.false;
+        path.match('/users/details/123-abc.html').should.be.false;
+        path.match('/users/profile/123-abc.html?what').should.be.false;
 
         path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html')
+    });
+
+    it('should match paths with query parameters', function () {
+        var path = new Path('/users/profile/:id-:id2?:id3');
+        // Successful match & partial match
+        path.match('/users/profile/123-456?id3=789').should.eql({ id: '123', id2: '456', id3: '789' });
+        path.partialMatch('/users/profile/123-456').should.eql({ id: '123', id2: '456' });
+        // Unsuccessful match
+        path.match('/users/details/123-456').should.be.false;
+        path.match('/users/profile/123-456?id3=789&id4=000').should.be.false;
+
+        path.build({ id: '123', id2: '456', id3: '789' }).should.equal('/users/profile/123-456?id3=789')
     });
 });

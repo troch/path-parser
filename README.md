@@ -4,6 +4,7 @@ A small utility to parse and build paths. It can be used to partially or fully
 match paths against a defined pattern.
 
 Partial match allows to determine if a given path starts with the defined pattern.
+It is used by [route-node](https://github.com/troch/route-node)
 
 ## Usage
 
@@ -12,11 +13,11 @@ var Path = require('path-parser');
 // Defining a new path
 var p = new Path('/users/profile/:id');
 // Matching
-p.match("users/profile/00123")               // => {id: "00123"}
+p.match('/users/profile/00123')               // => {id: "00123"}
 // Partial matching: does this path
 // starts with that pattern?
-p.partialMatch("users/profile/00123/orders") // => {id: "00123"}
-p.partialMatch("profile/00123/orders")       // => false
+p.partialMatch('/users/profile/00123/orders') // => {id: "00123"}
+p.partialMatch('/profile/00123/orders')       // => false
 // Building
 p.build({id: '00123'})                       // => "users/profile/00123"
 ```

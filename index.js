@@ -34,7 +34,7 @@ var rules = [{
 }, {
     // Sub delimiters
     name: 'sub-delimiter',
-    pattern: /^(\!|\&|,|;|\-|_)/,
+    pattern: /^(\!|\&|\-|_)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }
@@ -151,7 +151,7 @@ var Path = (function () {
             }, {});
 
             if (Object.keys(queryParams).every(function (p) {
-                return _this2.queryParams.indexOf(p) !== 1;
+                return Object.keys(_this2.queryParams).indexOf(p) !== 1;
             }) && Object.keys(queryParams).length === this.queryParams.length) {
                 // Extend url match
                 Object.keys(queryParams).forEach(function (p) {

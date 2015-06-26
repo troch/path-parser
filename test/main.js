@@ -12,6 +12,12 @@ describe('Path', function () {
         }).should.throw();
     });
 
+    // it('should throw an error if a path cannot be tokenised', function () {
+    //     (function () {
+    //         new Path('/!#')
+    //     }).should.throw();
+    // });
+
     it('should match and build paths with url parameters', function () {
         var path = new Path('/users/profile/:id-:id2.html');
         // Successful match & partial match
@@ -22,10 +28,25 @@ describe('Path', function () {
         path.match('/users/details/123-abc.html').should.be.false;
         path.match('/users/profile/123-abc.html?what').should.be.false;
 
-        path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html')
+        path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html');
+        (function () {
+            path.build({ id: '123'});
+        }).should.throw('Missing parameters');
     });
 
-    it('should match build paths with url and query parameters', function () {
+    it('should match and build paths with query parameters', function () {
+        var path = new Path('/users?offset&limit');
+        // Successful match & partial match
+        path.match('/users?offset=31&limit=15').should.eql({ offset: '31', limit: '15' });
+        // path.partialMatch('/users').should.eql({});
+        // Unsuccessful match
+        path.match('/users?offset=31').should.be.false;
+        path.match('/users?limit=15').should.be.false;
+
+        path.build({ offset: 31, limit: 15 }).should.equal('/users?offset=31&limit=15')
+    });
+
+    it('should match and build paths with url and query parameters', function () {
         var path = new Path('/users/profile/:id-:id2?:id3');
         path.hasQueryParams.should.be.true;
         // Successful match & partial match

@@ -3,4 +3,4 @@ node_js:
   - '0.10'
   - '0.12'
 script:
-  - npm test
+  - npm run test-cover

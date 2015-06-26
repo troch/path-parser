@@ -82,7 +82,7 @@ var Path = (function () {
         this.tokens = tokenise(path);
 
         this.hasUrlParams = this.tokens.filter(function (t) {
-            return /url-parameter/.test(t.type);
+            return /^url-parameter/.test(t.type);
         }).length > 0;
         this.hasSpatParam = this.tokens.filter(function (t) {
             return /splat/.test(t.type);
@@ -92,7 +92,7 @@ var Path = (function () {
         }).length > 0;
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens.filter(function (t) {
-            return /url-parameter/.test(t.type);
+            return /^url-parameter/.test(t.type);
         }).map(function (t) {
             return t.val;
         })
@@ -182,7 +182,7 @@ var Path = (function () {
             var base = this.tokens.filter(function (t) {
                 return t.type !== 'query-parameter';
             }).map(function (t) {
-                return t.type === 'url-parameter' ? params[t.val[0]] : t.match;
+                return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match;
             }).join('');
 
             var searchPart = this.queryParams.map(function (p) {

@@ -44,6 +44,8 @@ describe('Path', function () {
         // Successful match
         path.match('/users/profile/123').should.eql({ splat: 'profile/123'});
         path.match('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage/view/123'});
+        // Build path
+        path.build({ splat: 'profile/123'}).should.equal('/users/profile/123');
     });
 
     it('should match build paths with splat and url parameters', function () {
@@ -59,5 +61,6 @@ describe('Path', function () {
         path.hasSpatParam.should.be.true;
         // Successful match
         path.match('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
+        path.build({section: 'users', splat: 'profile/view', id: '123'}).should.equal('/users/profile/view?id=123');
     })
 });

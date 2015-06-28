@@ -1,4 +1,6 @@
+[![npm version](https://badge.fury.io/js/path-parser.svg)](http://badge.fury.io/js/path-parser)
 [![Build Status](https://travis-ci.org/troch/path-parser.svg)](https://travis-ci.org/troch/path-parser)
+[![Coverage Status](https://coveralls.io/repos/troch/path-parser/badge.svg?branch=master)](https://coveralls.io/r/troch/path-parser?branch=master)
 
 # path-parser
 

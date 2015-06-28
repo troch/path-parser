@@ -12,11 +12,17 @@ describe('Path', function () {
         }).should.throw();
     });
 
-    // it('should throw an error if a path cannot be tokenised', function () {
-    //     (function () {
-    //         new Path('/!#')
-    //     }).should.throw();
-    // });
+    it('should throw an error if Path is used like a function', function () {
+        (function () {
+            Path()
+        }).should.throw();
+    });
+
+    it('should throw an error if a path cannot be tokenised', function () {
+        (function () {
+            new Path('/!#')
+        }).should.throw();
+    });
 
     it('should match and build paths with url parameters', function () {
         var path = new Path('/users/profile/:id-:id2.html');

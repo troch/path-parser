@@ -27,21 +27,21 @@ var rules = [{
 }, {
     // Delimiter /
     name: 'delimiter',
-    pattern: /^(\/|\?|#)/,
+    pattern: /^(\/|\?)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }
 }, {
     // Sub delimiters
     name: 'sub-delimiter',
-    pattern: /^(\!|\&|\-|_)/,
+    pattern: /^(\!|\&|\-|_|\.)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }
 }, {
     // Unmatched fragment (until delimiter is found)
     name: 'fragment',
-    pattern: /^(.*?)(?=\/|\?|\#|$)/,
+    pattern: /^([0-9a-zA-Z]+?)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }

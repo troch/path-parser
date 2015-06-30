@@ -1,7 +1,9 @@
 'use strict';
 
-var Path = require('../');
-var should = require('should');
+var path      = require('path');
+var pkg       = require('../package.json');
+var Path      = require(path.join(__dirname, '..', pkg.main));
+var should    = require('should');
 
 require('mocha');
 

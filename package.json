@@ -2,11 +2,11 @@
   "name": "path-parser",
   "version": "0.0.4",
   "description": "A small utility to parse paths",
-  "main": "index.js",
+  "main": "dist/commonjs/path-parser.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/_mocha",
     "test-cover": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha",
-    "build": "./node_modules/.bin/babel -m common modules/Path.js > index.js"
+    "build": "node ./scripts/build.js"
   },
   "repository": {
     "type": "git",
@@ -32,6 +32,7 @@
     "mocha": "^2.2.5",
     "babel": "^5.5.8",
     "coveralls": "^2.11.2",
-    "istanbul": "^0.3.16"
+    "istanbul": "^0.3.16",
+    "async": "^1.3.0"
   }
 }

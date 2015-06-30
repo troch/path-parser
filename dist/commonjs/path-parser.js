@@ -199,4 +199,3 @@ var Path = (function () {
 exports['default'] = Path;
 module.exports = exports['default'];
 // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
-

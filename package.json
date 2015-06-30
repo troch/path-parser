@@ -6,7 +6,7 @@
   "scripts": {
     "test": "node ./node_modules/mocha/bin/_mocha",
     "test-cover": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha",
-    "build": "./node_modules/.bin/babel -m common lib/Path.js > index.js"
+    "build": "./node_modules/.bin/babel -m common modules/Path.js > index.js"
   },
   "repository": {
     "type": "git",

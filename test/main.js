@@ -67,7 +67,7 @@ describe('Path', function () {
         path.build({ id: '123', id2: '456', id3: '789' }).should.equal('/users/profile/123-456?id3=789')
     });
 
-    it('should match build paths with splat parameters', function () {
+    it('should match and build paths with splat parameters', function () {
         var path = new Path('/users/*splat');
         path.hasSpatParam.should.be.true;
         // Successful match
@@ -77,7 +77,7 @@ describe('Path', function () {
         path.build({ splat: 'profile/123'}).should.equal('/users/profile/123');
     });
 
-    it('should match build paths with splat and url parameters', function () {
+    it('should match and build paths with splat and url parameters', function () {
         var path = new Path('/users/*splat/view/:id');
         path.hasSpatParam.should.be.true;
         // Successful match
@@ -85,11 +85,20 @@ describe('Path', function () {
         path.match('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage', id: '123' });
     });
 
-    it('should match build paths with url, splat and query parameters', function () {
+    it('should match and build paths with url, splat and query parameters', function () {
         var path = new Path('/:section/*splat?id');
         path.hasSpatParam.should.be.true;
         // Successful match
         path.match('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
         path.build({section: 'users', splat: 'profile/view', id: '123'}).should.equal('/users/profile/view?id=123');
     })
+
+    it('should match and build paths with matrix parameters', function () {
+        var path = new Path('/users/;section');
+        path.hasMatrixParams.should.be.true;
+        // Build path
+        path.build({ section: 'profile'}).should.equal('/users/;section=profile');
+        // Successful match
+        path.match('/users/;section=profile').should.eql({ section: 'profile' });
+    });
 });

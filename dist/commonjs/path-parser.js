@@ -20,6 +20,12 @@ var rules = [{
     pattern: /^\*([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
     regex: /([^\?]*)/
 }, {
+    name: 'url-parameter-matrix',
+    pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
+    regex: function regex(match) {
+        return new RegExp(';' + match[1] + '=([a-zA-Z0-9-_.~]+)');
+    }
+}, {
     // Query parameter: ?param1&param2
     //                   ?:param1&:param2
     name: 'query-parameter',
@@ -34,7 +40,7 @@ var rules = [{
 }, {
     // Sub delimiters
     name: 'sub-delimiter',
-    pattern: /^(\!|\&|\-|_|\.)/,
+    pattern: /^(\!|\&|\-|_|\.|;)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }
@@ -85,7 +91,10 @@ var Path = (function () {
             return /^url-parameter/.test(t.type);
         }).length > 0;
         this.hasSpatParam = this.tokens.filter(function (t) {
-            return /splat/.test(t.type);
+            return /splat$/.test(t.type);
+        }).length > 0;
+        this.hasMatrixParams = this.tokens.filter(function (t) {
+            return /matrix$/.test(t.type);
         }).length > 0;
         this.hasQueryParams = this.tokens.filter(function (t) {
             return t.type === 'query-parameter';
@@ -182,6 +191,7 @@ var Path = (function () {
             var base = this.tokens.filter(function (t) {
                 return t.type !== 'query-parameter';
             }).map(function (t) {
+                if (t.type === 'url-parameter-matrix') return ';' + t.val[0] + '=' + params[t.val[0]];
                 return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match;
             }).join('');
 

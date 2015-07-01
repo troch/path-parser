@@ -13,6 +13,11 @@ const rules = [
         regex: /([^\?]*)/
     },
     {
+        name: 'url-parameter-matrix',
+        pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
+        regex:   match => new RegExp(';' + match[1] + '=([a-zA-Z0-9-_.~]+)')
+    },
+    {
         // Query parameter: ?param1&param2
         //                   ?:param1&:param2
         name:    'query-parameter',
@@ -28,7 +33,7 @@ const rules = [
     {
         // Sub delimiters
         name:    'sub-delimiter',
-        pattern: /^(\!|\&|\-|_|\.)/,
+        pattern: /^(\!|\&|\-|_|\.|;)/,
         regex:   match => new RegExp(match[0])
     },
     {
@@ -71,7 +76,8 @@ export default class Path {
         this.tokens = tokenise(path)
 
         this.hasUrlParams = this.tokens.filter(t => /^url-parameter/.test(t.type)).length > 0
-        this.hasSpatParam = this.tokens.filter(t => /splat/.test(t.type)).length > 0
+        this.hasSpatParam = this.tokens.filter(t => /splat$/.test(t.type)).length > 0
+        this.hasMatrixParams = this.tokens.filter(t => /matrix$/.test(t.type)).length > 0
         this.hasQueryParams = this.tokens.filter(t => t.type === 'query-parameter').length > 0
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens
@@ -142,7 +148,10 @@ export default class Path {
 
         let base = this.tokens
             .filter(t => t.type !== 'query-parameter')
-            .map(t => /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match)
+            .map(t => {
+                if (t.type === 'url-parameter-matrix') return `;${t.val[0]}=${params[t.val[0]]}`
+                return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
+            })
             .join('')
 
         let searchPart = this.queryParams

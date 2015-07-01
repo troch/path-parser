@@ -29,6 +29,7 @@ p.build({id: '00123'})                       // => "users/profile/00123"
 ## Defining parameters
 
 - `:param`: for URL parameters
+- `;param`: for matrix parameters
 - `*splat`: for parameters spanning over multiple segments. Handle with care
 - `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional
 

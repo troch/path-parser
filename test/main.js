@@ -94,20 +94,11 @@ describe('Path', function () {
     })
 
     it('should match and build paths with matrix parameters', function () {
-<<<<<<< HEAD
         var path = new Path('/users/;section;id');
         path.hasMatrixParams.should.be.true;
         // Build path
         path.build({ section: 'profile', id: '123'}).should.equal('/users/;section=profile;id=123');
         // Successful match
         path.match('/users/;section=profile;id=123').should.eql({ section: 'profile', id: '123' });
-=======
-        var path = new Path('/users/;section');
-        path.hasMatrixParams.should.be.true;
-        // Build path
-        path.build({ section: 'profile'}).should.equal('/users/;section=profile');
-        // Successful match
-        path.match('/users/;section=profile').should.eql({ section: 'profile' });
->>>>>>> 0451290c399a9801b73c5f2b7263fff182352ed0
     });
 });

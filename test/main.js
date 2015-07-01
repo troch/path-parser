@@ -32,9 +32,9 @@ describe('Path', function () {
         path.match('/users/profile/123-abc.html').should.eql({ id: '123', id2: 'abc' });
         path.partialMatch('/users/profile/123-abc.html?what').should.eql({ id: '123', id2: 'abc' });
         // Unsuccessful match
-        path.match('/users/details/123-abc').should.be.false;
-        path.match('/users/details/123-abc.html').should.be.false;
-        path.match('/users/profile/123-abc.html?what').should.be.false;
+        should.not.exist(path.match('/users/details/123-abc'));
+        should.not.exist(path.match('/users/details/123-abc.html'));
+        should.not.exist(path.match('/users/profile/123-abc.html?what'));
 
         path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html');
         (function () {
@@ -48,8 +48,8 @@ describe('Path', function () {
         path.match('/users?offset=31&limit=15').should.eql({ offset: '31', limit: '15' });
         // path.partialMatch('/users').should.eql({});
         // Unsuccessful match
-        path.match('/users?offset=31').should.be.false;
-        path.match('/users?limit=15').should.be.false;
+        should.not.exist(path.match('/users?offset=31'));
+        should.not.exist(path.match('/users?limit=15'));
 
         path.build({ offset: 31, limit: 15 }).should.equal('/users?offset=31&limit=15')
     });
@@ -60,14 +60,14 @@ describe('Path', function () {
         // Successful match & partial match
         path.match('/users/profile/123-456?id3=789').should.eql({ id: '123', id2: '456', id3: '789' });
         path.partialMatch('/users/profile/123-456').should.eql({ id: '123', id2: '456' });
-        // Unsuccessful match
-        path.match('/users/details/123-456').should.be.false;
-        path.match('/users/profile/123-456?id3=789&id4=000').should.be.false;
+        // Un,successful match
+        should.not.exist(path.match('/users/details/123-456'));
+        should.not.exist(path.match('/users/profile/123-456?id3=789&id4=000'));
 
         path.build({ id: '123', id2: '456', id3: '789' }).should.equal('/users/profile/123-456?id3=789')
     });
 
-    it('should match build paths with splat parameters', function () {
+    it('should match and build paths with splat parameters', function () {
         var path = new Path('/users/*splat');
         path.hasSpatParam.should.be.true;
         // Successful match
@@ -77,7 +77,7 @@ describe('Path', function () {
         path.build({ splat: 'profile/123'}).should.equal('/users/profile/123');
     });
 
-    it('should match build paths with splat and url parameters', function () {
+    it('should match and build paths with splat and url parameters', function () {
         var path = new Path('/users/*splat/view/:id');
         path.hasSpatParam.should.be.true;
         // Successful match
@@ -85,11 +85,29 @@ describe('Path', function () {
         path.match('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage', id: '123' });
     });
 
-    it('should match build paths with url, splat and query parameters', function () {
+    it('should match and build paths with url, splat and query parameters', function () {
         var path = new Path('/:section/*splat?id');
         path.hasSpatParam.should.be.true;
         // Successful match
         path.match('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
         path.build({section: 'users', splat: 'profile/view', id: '123'}).should.equal('/users/profile/view?id=123');
     })
+
+    it('should match and build paths with matrix parameters', function () {
+<<<<<<< HEAD
+        var path = new Path('/users/;section;id');
+        path.hasMatrixParams.should.be.true;
+        // Build path
+        path.build({ section: 'profile', id: '123'}).should.equal('/users/;section=profile;id=123');
+        // Successful match
+        path.match('/users/;section=profile;id=123').should.eql({ section: 'profile', id: '123' });
+=======
+        var path = new Path('/users/;section');
+        path.hasMatrixParams.should.be.true;
+        // Build path
+        path.build({ section: 'profile'}).should.equal('/users/;section=profile');
+        // Successful match
+        path.match('/users/;section=profile').should.eql({ section: 'profile' });
+>>>>>>> 0451290c399a9801b73c5f2b7263fff182352ed0
+    });
 });

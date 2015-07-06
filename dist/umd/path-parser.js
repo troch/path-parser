@@ -17,12 +17,18 @@
 
     function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+    var defaultOrConstrained = function defaultOrConstrained(match) {
+        return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')';
+    };
+
     var rules = [{
         // An URL can contain a parameter :paramName
         // - and _ are allowed but not in last position
         name: 'url-parameter',
-        pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
-        regex: /([a-zA-Z0-9-_.~]+)/
+        pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
+        regex: function regex(match) {
+            return new RegExp(defaultOrConstrained(match[2]));
+        }
     }, {
         // Url parameter (splat)
         name: 'url-parameter-splat',
@@ -30,9 +36,9 @@
         regex: /([^\?]*)/
     }, {
         name: 'url-parameter-matrix',
-        pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
+        pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
         regex: function regex(match) {
-            return new RegExp(';' + match[1] + '=([a-zA-Z0-9-_.~]+)');
+            return new RegExp(';' + match[1] + '=' + defaultOrConstrained(match[2]));
         }
     }, {
         // Query parameter: ?param1&param2
@@ -73,7 +79,8 @@
             tokens.push({
                 type: rule.name,
                 match: match[0],
-                val: match.length > 1 ? match.slice(1) : null,
+                val: match.slice(1, 2),
+                otherVal: match.slice(2),
                 regex: rule.regex instanceof Function ? rule.regex(match) : rule.regex
             });
 
@@ -112,7 +119,7 @@
             this.urlParams = !this.hasUrlParams ? [] : this.tokens.filter(function (t) {
                 return /^url-parameter/.test(t.type);
             }).map(function (t) {
-                return t.val;
+                return t.val.slice(0, 1);
             })
             // Flatten
             .reduce(function (r, v) {
@@ -191,11 +198,23 @@
             key: 'build',
             value: function build() {
                 var params = arguments[0] === undefined ? {} : arguments[0];
+                var ignoreConstraints = arguments[1] === undefined ? false : arguments[1];
 
                 // Check all params are provided (not search parameters which are optional)
                 if (!this.params.every(function (p) {
                     return params[p] !== undefined;
                 })) throw new Error('Missing parameters');
+
+                // Check constraints
+                if (!ignoreConstraints) {
+                    var constraintsPassed = this.tokens.filter(function (t) {
+                        return /^url-parameter/.test(t.type) && !/-splat$/.test(t.type);
+                    }).every(function (t) {
+                        return new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]);
+                    });
+
+                    if (!constraintsPassed) throw new Error('Some parameters are of invalid format');
+                }
 
                 var base = this.tokens.filter(function (t) {
                     return t.type !== 'query-parameter';

@@ -1,10 +1,14 @@
+let defaultOrConstrained = (match) => {
+    return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')'
+}
+
 const rules = [
     {
         // An URL can contain a parameter :paramName
         // - and _ are allowed but not in last position
         name:    'url-parameter',
-        pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
-        regex:   /([a-zA-Z0-9-_.~]+)/
+        pattern: /^:([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
+        regex:   match => new RegExp(defaultOrConstrained(match[2]))
     },
     {
         // Url parameter (splat)
@@ -14,8 +18,8 @@ const rules = [
     },
     {
         name: 'url-parameter-matrix',
-        pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
-        regex:   match => new RegExp(';' + match[1] + '=([a-zA-Z0-9-_.~]+)')
+        pattern: /^\;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
+        regex:   match => new RegExp(';' + match[1] + '=' + defaultOrConstrained(match[2]))
     },
     {
         // Query parameter: ?param1&param2
@@ -52,10 +56,11 @@ let tokenise = (str, tokens = []) => {
             if (!match) return false
 
             tokens.push({
-                type:   rule.name,
-                match:  match[0],
-                val:    match.length > 1 ? match.slice(1) : null,
-                regex:  rule.regex instanceof Function ? rule.regex(match) : rule.regex
+                type:     rule.name,
+                match:    match[0],
+                val:      match.slice(1, 2),
+                otherVal: match.slice(2),
+                regex:    rule.regex instanceof Function ? rule.regex(match) : rule.regex
             })
 
             if (match[0].length < str.length) tokens = tokenise(str.substr(match[0].length), tokens)
@@ -82,7 +87,7 @@ export default class Path {
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens
                             .filter(t => /^url-parameter/.test(t.type))
-                            .map(t => t.val)
+                            .map(t => t.val.slice(0, 1))
                             // Flatten
                             .reduce((r, v) => r.concat(v))
         // Query params
@@ -142,9 +147,18 @@ export default class Path {
         return this._urlMatch(path, new RegExp('^' + this.source))
     }
 
-    build(params = {}) {
+    build(params = {}, ignoreConstraints = false) {
         // Check all params are provided (not search parameters which are optional)
         if (!this.params.every(p => params[p] !== undefined)) throw new Error('Missing parameters')
+
+        // Check constraints
+        if (!ignoreConstraints) {
+            let constraintsPassed = this.tokens
+                .filter(t => /^url-parameter/.test(t.type) && !/-splat$/.test(t.type))
+                .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]))
+
+            if (!constraintsPassed) throw new Error('Some parameters are of invalid format');
+        }
 
         let base = this.tokens
             .filter(t => t.type !== 'query-parameter')

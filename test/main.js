@@ -101,4 +101,28 @@ describe('Path', function () {
         // Successful match
         path.match('/users/;section=profile;id=123').should.eql({ section: 'profile', id: '123' });
     });
+
+    it('should match and build paths with constrained parameters', function () {
+        var path = new Path('/users/:id<\\d+>');
+        // Build path
+        path.build({id: 99}).should.equal('/users/99');
+        // Match path
+        path.match('/users/11').should.eql({id: '11'});
+        should.not.exist(path.match('/users/thomas'));
+
+        path = new Path('/users/;id<[A-F0-9]{6}>');
+        // Build path
+        path.build({id: 'A76FE4'}).should.equal('/users/;id=A76FE4');
+        // Error because of incorrect parameter format
+        (function () {
+            path.build({id: 'incorrect-param'});
+        }).should.throw();
+        // Force
+        path.build({id: 'fake'}, true).should.equal('/users/;id=fake');
+
+
+        // Match path
+        path.match('/users/;id=A76FE4').should.eql({id: 'A76FE4'});
+        should.not.exist(path.match('/users;id=Z12345'));
+    });
 });

@@ -33,6 +33,24 @@ p.build({id: '00123'})                       // => "users/profile/00123"
 - `*splat`: for parameters spanning over multiple segments. Handle with care
 - `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional
 
+## Parameter constraints
+
+For URL parameters and matrix parameters, you can add a constraint in the form of a regular expression.
+Note that back slashes have to be escaped.
+
+- `:param<\\d+>` will match numbers only for parameter `param`
+- `;id<[a-fA-F0-9]{8}` will match 8 characters hexadecimal strings for parameter `id`
+
+Constraints are also applied when building paths, unless specified otherwise
+
+```javascript
+// Path.build(params, ignore)
+var Path = new Path('/users/profile/:id<\d+>');
+
+path.build({id: 'not-a-number'}); // => Will throw an error
+path.build({id: 'not-a-number'}, true); // => '/users/profile/not-a-number'
+```
+
 ## Related modules
 
 - [route-parser](https://github.com/rcs/route-parser)

@@ -1,7 +1,7 @@
 {
   "name": "path-parser",
-  "version": "0.0.7",
-  "description": "A small utility to parse paths",
+  "version": "0.1.0",
+  "description": "A small utility to parse, match and generate paths",
   "main": "dist/commonjs/path-parser.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/_mocha",

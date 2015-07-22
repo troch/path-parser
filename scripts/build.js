@@ -17,7 +17,8 @@ function buildFactory(module, dest) {
 
 async.parallel([
     buildFactory('common', 'dist/commonjs/path-parser.js'),
-    buildFactory('umd', 'dist/umd/path-parser.js')
+    buildFactory('umd',    'dist/umd/path-parser.js'),
+    buildFactory('amd',    'dist/amd/path-parser.js')
 ], function (err) {
     if (err) console.log(err);
     process.exit(err ? 1 : 0);

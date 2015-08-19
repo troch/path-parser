@@ -88,7 +88,7 @@ var tokenise = function tokenise(str) {
 
 var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
     if (!trailingSlash || source === '/') return source;
-    return source.replace(/\/$/, '') + '(?:/)?';
+    return source.replace(/\/$/, '') + '(?:\\/)?';
 };
 
 var Path = (function () {
@@ -164,7 +164,7 @@ var Path = (function () {
             // trailingSlash: falsy => non optional, truthy => optional
             var source = optTrailingSlash(this.source, trailingSlash);
             // Check if exact match
-            var match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '?.*$' : '$')));
+            var match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
             // If no match, or no query params, no need to go further
             if (!match || !this.hasQueryParams) return match;
             // Extract query params

@@ -21,7 +21,7 @@ p.match('/users/profile/00123')               // => {id: "00123"}
 // Partial matching: does this path
 // starts with that pattern?
 p.partialMatch('/users/profile/00123/orders') // => {id: "00123"}
-p.partialMatch('/profile/00123/orders')       // => false
+p.partialMatch('/profile/00123/orders')       // => null
 // Building
 p.build({id: '00123'})                       // => "users/profile/00123"
 ```
@@ -49,6 +49,17 @@ var Path = new Path('/users/profile/:id<\d+>');
 
 path.build({id: 'not-a-number'});       // => Will throw an error
 path.build({id: 'not-a-number'}, true); // => '/users/profile/not-a-number'
+```
+
+## Optional trailing slashes
+
+When using `.match()` or `.partialMatch()`, you can path a second argument. If truthy, it will make trailing slashes optional.
+
+```javascript
+var path = new Path('/my-path');
+
+path.match('/my-path/')       // => null
+path.match('/my-path/', true) // => {}
 ```
 
 ## Related modules

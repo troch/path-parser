@@ -95,6 +95,11 @@
         return tokens;
     };
 
+    var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
+        if (!trailingSlash) return source;
+        return source.replace(/\/$/, '') + '(?:/)?';
+    };
+
     var Path = (function () {
         function Path(path) {
             _classCallCheck(this, Path);
@@ -163,8 +168,12 @@
             value: function match(path) {
                 var _this2 = this;
 
+                var trailingSlash = arguments[1] === undefined ? 0 : arguments[1];
+
+                // trailingSlash: falsy => non optional, truthy => optional
+                var source = optTrailingSlash(this.source, trailingSlash);
                 // Check if exact match
-                var match = this._urlMatch(path, new RegExp('^' + this.source + (this.hasQueryParams ? '?.*$' : '$')));
+                var match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '?.*$' : '$')));
                 // If no match, or no query params, no need to go further
                 if (!match || !this.hasQueryParams) return match;
                 // Extract query params
@@ -191,8 +200,12 @@
         }, {
             key: 'partialMatch',
             value: function partialMatch(path) {
+                var trailingSlash = arguments[1] === undefined ? 0 : arguments[1];
+
                 // Check if partial match (start of given path matches regex)
-                return this._urlMatch(path, new RegExp('^' + this.source));
+                // trailingSlash: falsy => non optional, truthy => optional
+                var source = optTrailingSlash(this.source, trailingSlash);
+                return this._urlMatch(path, new RegExp('^' + source));
             }
         }, {
             key: 'build',

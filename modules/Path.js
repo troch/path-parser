@@ -76,7 +76,7 @@ let tokenise = (str, tokens = []) => {
 
 let optTrailingSlash = (source, trailingSlash) => {
     if (!trailingSlash || source === '/') return source
-    return source.replace(/\/$/, '') + '(?:\/)?'
+    return source.replace(/\/$/, '') + '(?:\\/)?'
 }
 
 export default class Path {
@@ -126,7 +126,7 @@ export default class Path {
         // trailingSlash: falsy => non optional, truthy => optional
         let source = optTrailingSlash(this.source, trailingSlash)
         // Check if exact match
-        let match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\?.*$' : '$')))
+        let match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')))
         // If no match, or no query params, no need to go further
         if (!match || !this.hasQueryParams) return match
         // Extract query params

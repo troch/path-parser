@@ -75,7 +75,7 @@ let tokenise = (str, tokens = []) => {
 }
 
 let optTrailingSlash = (source, trailingSlash) => {
-    if (!trailingSlash) return source
+    if (!trailingSlash || source === '/') return source
     return source.replace(/\/$/, '') + '(?:\/)?'
 }
 

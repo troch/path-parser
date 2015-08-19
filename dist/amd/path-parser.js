@@ -84,7 +84,7 @@ define(['exports', 'module'], function (exports, module) {
     };
 
     var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
-        if (!trailingSlash) return source;
+        if (!trailingSlash || source === '/') return source;
         return source.replace(/\/$/, '') + '(?:/)?';
     };
 

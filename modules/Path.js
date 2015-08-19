@@ -74,6 +74,11 @@ let tokenise = (str, tokens = []) => {
     return tokens
 }
 
+let optTrailingSlash = (source, trailingSlash) => {
+    if (!trailingSlash) return source
+    return source.replace(/\/$/, '') + '(?:\/)?'
+}
+
 export default class Path {
     constructor(path) {
         if (!path) throw new Error('Please supply a path')
@@ -117,9 +122,11 @@ export default class Path {
                 }, {})
     }
 
-    match(path) {
+    match(path, trailingSlash = 0) {
+        // trailingSlash: falsy => non optional, truthy => optional
+        let source = optTrailingSlash(this.source, trailingSlash)
         // Check if exact match
-        let match = this._urlMatch(path, new RegExp('^' + this.source + (this.hasQueryParams ? '\?.*$' : '$')))
+        let match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\?.*$' : '$')))
         // If no match, or no query params, no need to go further
         if (!match || !this.hasQueryParams) return match
         // Extract query params
@@ -142,9 +149,11 @@ export default class Path {
         return null
     }
 
-    partialMatch(path) {
+    partialMatch(path, trailingSlash = 0) {
         // Check if partial match (start of given path matches regex)
-        return this._urlMatch(path, new RegExp('^' + this.source))
+        // trailingSlash: falsy => non optional, truthy => optional
+        let source = optTrailingSlash(this.source, trailingSlash)
+        return this._urlMatch(path, new RegExp('^' + source))
     }
 
     build(params = {}, ignoreConstraints = false) {

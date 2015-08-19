@@ -125,4 +125,16 @@ describe('Path', function () {
         path.match('/users/;id=A76FE4').should.eql({id: 'A76FE4'});
         should.not.exist(path.match('/users;id=Z12345'));
     });
+
+    it('should match paths with optional trailing slashes', function () {
+        var path = new Path('/my-path');
+        should.not.exist(path.match('/my-path/'));
+        path.match('/my-path/', true).should.eql({});
+        path.match('/my-path/', 1).should.eql({});
+
+        path = new Path('/my-path/');
+        should.not.exist(path.match('/my-path'));
+        path.match('/my-path', true).should.eql({});
+        path.match('/my-path', 1).should.eql({});
+    });
 });

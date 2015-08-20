@@ -41,7 +41,7 @@ var rules = [{
     name: 'delimiter',
     pattern: /^(\/|\?)/,
     regex: function regex(match) {
-        return new RegExp(match[0]);
+        return new RegExp('\\' + match[0]);
     }
 }, {
     // Sub delimiters
@@ -87,8 +87,8 @@ var tokenise = function tokenise(str) {
 };
 
 var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
-    if (!trailingSlash || source === '/') return source;
-    return source.replace(/\/$/, '') + '(?:\\/)?';
+    if (!trailingSlash || source === '\\/') return source;
+    return source.replace(/\\\/$/, '') + '(?:\\/)?';
 };
 
 var Path = (function () {

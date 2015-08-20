@@ -32,7 +32,7 @@ const rules = [
         // Delimiter /
         name:    'delimiter',
         pattern: /^(\/|\?)/,
-        regex:   match => new RegExp(match[0])
+        regex:   match => new RegExp('\\' + match[0])
     },
     {
         // Sub delimiters
@@ -75,8 +75,8 @@ let tokenise = (str, tokens = []) => {
 }
 
 let optTrailingSlash = (source, trailingSlash) => {
-    if (!trailingSlash || source === '/') return source
-    return source.replace(/\/$/, '') + '(?:\\/)?'
+    if (!trailingSlash || source === '\\/') return source
+    return source.replace(/\\\/$/, '') + '(?:\\/)?'
 }
 
 export default class Path {

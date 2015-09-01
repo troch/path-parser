@@ -36,7 +36,8 @@ var rules = [{
     //                   ?:param1&:param2
     name: 'query-parameter',
     pattern: /^(?:\?|&)(?:\:)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/
-}, {
+}, // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
+{
     // Delimiter /
     name: 'delimiter',
     pattern: /^(\/|\?)/,
@@ -60,7 +61,7 @@ var rules = [{
 }];
 
 var tokenise = function tokenise(str) {
-    var tokens = arguments[1] === undefined ? [] : arguments[1];
+    var tokens = arguments.length <= 1 || arguments[1] === undefined ? [] : arguments[1];
 
     // Look for a matching rule
     var matched = rules.some(function (rule) {
@@ -87,7 +88,7 @@ var tokenise = function tokenise(str) {
 };
 
 var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
-    if (!trailingSlash || source === '\\/') return source;
+    if (!trailingSlash) return source;
     return source.replace(/\\\/$/, '') + '(?:\\/)?';
 };
 
@@ -100,20 +101,24 @@ var Path = (function () {
         this.tokens = tokenise(path);
 
         this.hasUrlParams = this.tokens.filter(function (t) {
-            return /^url-parameter/.test(t.type);
+            return (/^url-parameter/.test(t.type)
+            );
         }).length > 0;
         this.hasSpatParam = this.tokens.filter(function (t) {
-            return /splat$/.test(t.type);
+            return (/splat$/.test(t.type)
+            );
         }).length > 0;
         this.hasMatrixParams = this.tokens.filter(function (t) {
-            return /matrix$/.test(t.type);
+            return (/matrix$/.test(t.type)
+            );
         }).length > 0;
         this.hasQueryParams = this.tokens.filter(function (t) {
             return t.type === 'query-parameter';
         }).length > 0;
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens.filter(function (t) {
-            return /^url-parameter/.test(t.type);
+            return (/^url-parameter/.test(t.type)
+            );
         }).map(function (t) {
             return t.val.slice(0, 1);
         })
@@ -159,7 +164,7 @@ var Path = (function () {
         value: function match(path) {
             var _this2 = this;
 
-            var trailingSlash = arguments[1] === undefined ? 0 : arguments[1];
+            var trailingSlash = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
             // trailingSlash: falsy => non optional, truthy => optional
             var source = optTrailingSlash(this.source, trailingSlash);
@@ -191,7 +196,7 @@ var Path = (function () {
     }, {
         key: 'partialMatch',
         value: function partialMatch(path) {
-            var trailingSlash = arguments[1] === undefined ? 0 : arguments[1];
+            var trailingSlash = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
             // Check if partial match (start of given path matches regex)
             // trailingSlash: falsy => non optional, truthy => optional
@@ -201,8 +206,8 @@ var Path = (function () {
     }, {
         key: 'build',
         value: function build() {
-            var params = arguments[0] === undefined ? {} : arguments[0];
-            var ignoreConstraints = arguments[1] === undefined ? false : arguments[1];
+            var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+            var ignoreConstraints = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
 
             // Check all params are provided (not search parameters which are optional)
             if (!this.params.every(function (p) {
@@ -212,7 +217,8 @@ var Path = (function () {
             // Check constraints
             if (!ignoreConstraints) {
                 var constraintsPassed = this.tokens.filter(function (t) {
-                    return /^url-parameter/.test(t.type) && !/-splat$/.test(t.type);
+                    return (/^url-parameter/.test(t.type) && !/-splat$/.test(t.type)
+                    );
                 }).every(function (t) {
                     return new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]);
                 });
@@ -224,7 +230,8 @@ var Path = (function () {
                 return t.type !== 'query-parameter';
             }).map(function (t) {
                 if (t.type === 'url-parameter-matrix') return ';' + t.val[0] + '=' + params[t.val[0]];
-                return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match;
+                return (/^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
+                );
             }).join('');
 
             var searchPart = this.queryParams.map(function (p) {
@@ -240,4 +247,3 @@ var Path = (function () {
 
 exports['default'] = Path;
 module.exports = exports['default'];
-// regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')

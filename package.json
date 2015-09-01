@@ -1,6 +1,6 @@
 {
   "name": "path-parser",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "A small utility to parse, match and generate paths",
   "main": "dist/commonjs/path-parser.js",
   "scripts": {

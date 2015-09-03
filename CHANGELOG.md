@@ -149,26 +149,3 @@ Issue router5/router5#19
 * add spat param flag ([b77174a](https://github.com/troch/path-parser/commit/b77174a))
 * add support for query parameters ([4ee86cf](https://github.com/troch/path-parser/commit/4ee86cf))
 * add support for splats ([e346bbf](https://github.com/troch/path-parser/commit/e346bbf))
-
-
-
-<a name="0.3.0"></a>
-# 0.3.0 (2015-09-03)
-
-
-### Bug Fixes
-
-* build a path without all query parameters ([208fd8a](https://github.com/troch/path-parser/commit/208fd8a))
-
-### Features
-
-* build paths without search part ([c9973be](https://github.com/troch/path-parser/commit/c9973be))
-
-
-### BREAKING CHANGES
-
-* .build() now takes an options object as a second parameter
-Issue router5/router5#19
-
-
-

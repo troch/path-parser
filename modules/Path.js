@@ -158,7 +158,7 @@ export default class Path {
 
     build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {
         // Check all params are provided (not search parameters which are optional)
-        if (!this.urlParams.every(p => params[p] !== undefined)) throw new Error('Missing parameters')
+        if (this.urlParams.some(p => params[p] === undefined)) throw new Error('Missing parameters')
 
         // Check constraints
         if (!opts.ignoreConstraints) {

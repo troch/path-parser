@@ -158,7 +158,7 @@ export default class Path {
 
     build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {
         // Check all params are provided (not search parameters which are optional)
-        if (!this.params.every(p => params[p] !== undefined)) throw new Error('Missing parameters')
+        if (!this.urlParams.every(p => params[p] !== undefined)) throw new Error('Missing parameters')
 
         // Check constraints
         if (!opts.ignoreConstraints) {
@@ -180,6 +180,7 @@ export default class Path {
         if (opts.ignoreSearch) return base
 
         let searchPart = this.queryParams
+            .filter(p => Object.keys(params).indexOf(p) !== -1)
             .map(p => p + '=' + params[p])
             .join('&')
 

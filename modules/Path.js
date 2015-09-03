@@ -156,12 +156,12 @@ export default class Path {
         return this._urlMatch(path, new RegExp('^' + source))
     }
 
-    build(params = {}, ignoreConstraints = false) {
+    build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {
         // Check all params are provided (not search parameters which are optional)
         if (!this.params.every(p => params[p] !== undefined)) throw new Error('Missing parameters')
 
         // Check constraints
-        if (!ignoreConstraints) {
+        if (!opts.ignoreConstraints) {
             let constraintsPassed = this.tokens
                 .filter(t => /^url-parameter/.test(t.type) && !/-splat$/.test(t.type))
                 .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]))
@@ -176,6 +176,8 @@ export default class Path {
                 return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
             })
             .join('')
+
+        if (opts.ignoreSearch) return base
 
         let searchPart = this.queryParams
             .map(p => p + '=' + params[p])

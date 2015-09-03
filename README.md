@@ -41,14 +41,14 @@ Note that back slashes have to be escaped.
 - `:param<\\d+>` will match numbers only for parameter `param`
 - `;id<[a-fA-F0-9]{8}` will match 8 characters hexadecimal strings for parameter `id`
 
-Constraints are also applied when building paths, unless specified otherwise (set second argument of `build` to true).
+Constraints are also applied when building paths, unless specified otherwise (set option flag `ignoreConstraints` to true).
 
 ```javascript
-// Path.build(params, ignore)
+// Path.build(params, opts)
 var Path = new Path('/users/profile/:id<\d+>');
 
 path.build({id: 'not-a-number'});       // => Will throw an error
-path.build({id: 'not-a-number'}, true); // => '/users/profile/not-a-number'
+path.build({id: 'not-a-number'}, {ignoreConstraints: true}); // => '/users/profile/not-a-number'
 ```
 
 ## Optional trailing slashes

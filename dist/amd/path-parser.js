@@ -204,15 +204,15 @@ define(['exports', 'module'], function (exports, module) {
             key: 'build',
             value: function build() {
                 var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-                var ignoreConstraints = arguments.length <= 1 || arguments[1] === undefined ? false : arguments[1];
+                var opts = arguments.length <= 1 || arguments[1] === undefined ? { ignoreConstraints: false, ignoreSearch: false } : arguments[1];
 
                 // Check all params are provided (not search parameters which are optional)
-                if (!this.params.every(function (p) {
-                    return params[p] !== undefined;
+                if (this.urlParams.some(function (p) {
+                    return params[p] === undefined;
                 })) throw new Error('Missing parameters');
 
                 // Check constraints
-                if (!ignoreConstraints) {
+                if (!opts.ignoreConstraints) {
                     var constraintsPassed = this.tokens.filter(function (t) {
                         return (/^url-parameter/.test(t.type) && !/-splat$/.test(t.type)
                         );
@@ -231,7 +231,11 @@ define(['exports', 'module'], function (exports, module) {
                     );
                 }).join('');
 
-                var searchPart = this.queryParams.map(function (p) {
+                if (opts.ignoreSearch) return base;
+
+                var searchPart = this.queryParams.filter(function (p) {
+                    return Object.keys(params).indexOf(p) !== -1;
+                }).map(function (p) {
                     return p + '=' + params[p];
                 }).join('&');
 

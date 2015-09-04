@@ -89,6 +89,10 @@ define(['exports', 'module'], function (exports, module) {
         return source.replace(/\\\/$/, '') + '(?:\\/)?';
     };
 
+    var isSerialisable = function isSerialisable(val) {
+        return val !== undefined && val !== null && val !== '';
+    };
+
     var Path = (function () {
         function Path(path) {
             _classCallCheck(this, Path);
@@ -173,7 +177,7 @@ define(['exports', 'module'], function (exports, module) {
                 var queryParams = path.split('?')[1].split('&').map(function (_) {
                     return _.split('=');
                 }).reduce(function (obj, m) {
-                    obj[m[0]] = m[1];
+                    obj[m[0]] = m[1] === undefined ? '' : m[1];
                     return obj;
                 }, {});
 
@@ -236,7 +240,7 @@ define(['exports', 'module'], function (exports, module) {
                 var searchPart = this.queryParams.filter(function (p) {
                     return Object.keys(params).indexOf(p) !== -1;
                 }).map(function (p) {
-                    return p + '=' + params[p];
+                    return p + (isSerialisable(params[p]) ? '=' + params[p] : '');
                 }).join('&');
 
                 return base + (searchPart ? '?' + searchPart : '');

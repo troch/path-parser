@@ -79,6 +79,8 @@ let optTrailingSlash = (source, trailingSlash) => {
     return source.replace(/\\\/$/, '') + '(?:\\/)?'
 }
 
+let isSerialisable = val => val !== undefined && val !== null && val !== ''
+
 export default class Path {
     constructor(path) {
         if (!path) throw new Error('Please supply a path')
@@ -133,7 +135,7 @@ export default class Path {
         let queryParams = path.split('?')[1].split('&')
             .map(_ => _.split('='))
             .reduce((obj, m) => {
-                obj[m[0]] = m[1]
+                obj[m[0]] = m[1] === undefined ? '' : m[1]
                 return obj
             }, {})
 
@@ -181,7 +183,7 @@ export default class Path {
 
         let searchPart = this.queryParams
             .filter(p => Object.keys(params).indexOf(p) !== -1)
-            .map(p => p + '=' + params[p])
+            .map(p => p + (isSerialisable(params[p]) ? '=' + params[p] : ''))
             .join('&')
 
         return base + (searchPart ? '?' + searchPart : '')

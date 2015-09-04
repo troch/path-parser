@@ -89,6 +89,17 @@ define(['exports', 'module'], function (exports, module) {
         return source.replace(/\\\/$/, '') + '(?:\\/)?';
     };
 
+    var parseQueryParams = function parseQueryParams(path) {
+        var searchPart = path.split('?')[1];
+        if (!searchPart) return {};
+        return searchPart.split('&').map(function (_) {
+            return _.split('=');
+        }).reduce(function (obj, m) {
+            obj[m[0]] = m[1] === undefined ? '' : m[1];
+            return obj;
+        }, {});
+    };
+
     var isSerialisable = function isSerialisable(val) {
         return val !== undefined && val !== null && val !== '';
     };
@@ -174,16 +185,12 @@ define(['exports', 'module'], function (exports, module) {
                 // If no match, or no query params, no need to go further
                 if (!match || !this.hasQueryParams) return match;
                 // Extract query params
-                var queryParams = path.split('?')[1].split('&').map(function (_) {
-                    return _.split('=');
-                }).reduce(function (obj, m) {
-                    obj[m[0]] = m[1] === undefined ? '' : m[1];
-                    return obj;
-                }, {});
+                var queryParams = parseQueryParams(path);
+                var unexpectedQueryParams = Object.keys(queryParams).filter(function (p) {
+                    return _this2.queryParams.indexOf(p) === -1;
+                });
 
-                if (Object.keys(queryParams).every(function (p) {
-                    return Object.keys(_this2.queryParams).indexOf(p) !== 1;
-                }) && Object.keys(queryParams).length === this.queryParams.length) {
+                if (unexpectedQueryParams.length === 0) {
                     // Extend url match
                     Object.keys(queryParams).forEach(function (p) {
                         return match[p] = queryParams[p];
@@ -197,12 +204,28 @@ define(['exports', 'module'], function (exports, module) {
         }, {
             key: 'partialMatch',
             value: function partialMatch(path) {
+                var _this3 = this;
+
                 var trailingSlash = arguments.length <= 1 || arguments[1] === undefined ? 0 : arguments[1];
 
                 // Check if partial match (start of given path matches regex)
                 // trailingSlash: falsy => non optional, truthy => optional
                 var source = optTrailingSlash(this.source, trailingSlash);
-                return this._urlMatch(path, new RegExp('^' + source));
+                var match = this._urlMatch(path, new RegExp('^' + source));
+
+                if (!match) return match;
+
+                if (!this.hasQueryParams) return match;
+
+                var queryParams = parseQueryParams(path);
+
+                Object.keys(queryParams).filter(function (p) {
+                    return _this3.queryParams.indexOf(p) >= 0;
+                }).forEach(function (p) {
+                    return match[p] = queryParams[p];
+                });
+
+                return match;
             }
         }, {
             key: 'build',

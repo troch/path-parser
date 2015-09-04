@@ -8,8 +8,7 @@ var through = require('through2');
 function conventionalChangelog(done) {
     clog({
             preset: 'angular',
-            // repository: 'https://github.com/router5/router5',
-            releaseCount: 0
+            // repository: 'https://github.com/router5/router5'
         })
         .pipe(source('CHANGELOG.md'))
         .pipe(through.obj(function (file, enc, cb) {

@@ -79,6 +79,17 @@ let optTrailingSlash = (source, trailingSlash) => {
     return source.replace(/\\\/$/, '') + '(?:\\/)?'
 }
 
+let parseQueryParams = path => {
+    let searchPart = path.split('?')[1]
+    if (!searchPart) return {}
+    return searchPart.split('&')
+            .map(_ => _.split('='))
+            .reduce((obj, m) => {
+                obj[m[0]] = m[1] === undefined ? '' : m[1]
+                return obj
+            }, {})
+}
+
 let isSerialisable = val => val !== undefined && val !== null && val !== ''
 
 export default class Path {
@@ -132,15 +143,11 @@ export default class Path {
         // If no match, or no query params, no need to go further
         if (!match || !this.hasQueryParams) return match
         // Extract query params
-        let queryParams = path.split('?')[1].split('&')
-            .map(_ => _.split('='))
-            .reduce((obj, m) => {
-                obj[m[0]] = m[1] === undefined ? '' : m[1]
-                return obj
-            }, {})
+        let queryParams = parseQueryParams(path)
+        let unexpectedQueryParams = Object.keys(queryParams)
+            .filter(p => this.queryParams.indexOf(p) === -1)
 
-        if (Object.keys(queryParams).every(p => Object.keys(this.queryParams).indexOf(p) !== 1)
-            && Object.keys(queryParams).length === this.queryParams.length) {
+        if (unexpectedQueryParams.length === 0) {
             // Extend url match
             Object.keys(queryParams)
                 .forEach(p => match[p] = queryParams[p])
@@ -155,7 +162,19 @@ export default class Path {
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
         let source = optTrailingSlash(this.source, trailingSlash)
-        return this._urlMatch(path, new RegExp('^' + source))
+        let match = this._urlMatch(path, new RegExp('^' + source))
+
+        if (!match) return match
+
+        if (!this.hasQueryParams) return match
+
+        let queryParams = parseQueryParams(path)
+
+        Object.keys(queryParams)
+            .filter(p => this.queryParams.indexOf(p) >= 0)
+            .forEach(p => match[p] = queryParams[p])
+
+        return match
     }
 
     build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {

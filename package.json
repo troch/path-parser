@@ -3,6 +3,7 @@
   "version": "0.3.2",
   "description": "A small utility to parse, match and generate paths",
   "main": "dist/commonjs/path-parser.js",
+  "jsnext:main": "modules/Path.js",
   "scripts": {
     "test": "node ./node_modules/mocha/bin/_mocha",
     "test-cover": "node ./node_modules/istanbul/lib/cli.js cover ./node_modules/mocha/bin/_mocha",

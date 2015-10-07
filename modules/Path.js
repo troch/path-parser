@@ -95,7 +95,9 @@ let parseQueryParams = path => {
             }, {})
 }
 
-let isSerialisable = val => val !== undefined && val !== null && val !== ''
+let toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + val : ''
+
+let serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val)
 
 export default class Path {
     static createPath(path) {
@@ -211,7 +213,7 @@ export default class Path {
 
         let searchPart = this.queryParams
             .filter(p => Object.keys(params).indexOf(p) !== -1)
-            .map(p => p + (isSerialisable(params[p]) ? '=' + params[p] : ''))
+            .map(p => serialise(p, params[p]))
             .join('&')
 
         return base + (searchPart ? '?' + searchPart : '')

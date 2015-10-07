@@ -65,6 +65,7 @@ describe('Path', function () {
         path.build({ offset: 31, limit: '' }).should.equal('/users?offset=31&limit');
         path.build({ offset: 31, limit: undefined  }).should.equal('/users?offset=31&limit');
         path.build({ offset: 31, limit: false  }).should.equal('/users?offset=31&limit=false');
+        path.build({ offset: [31, 30], limit: false  }).should.equal('/users?offset=31&offset=30&limit=false');
         path.build({ offset: 31, limit: 15 }, {ignoreSearch: true}).should.equal('/users');
     });
 

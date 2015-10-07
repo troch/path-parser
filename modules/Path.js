@@ -85,7 +85,12 @@ let parseQueryParams = path => {
     return searchPart.split('&')
             .map(_ => _.split('='))
             .reduce((obj, m) => {
-                obj[m[0]] = m[1] === undefined ? '' : m[1]
+                let val = m[1] === undefined ? '' : m[1]
+                let existingVal = obj[m[0]]
+
+                if (existingVal === undefined) obj[m[0]] = val
+                else obj[m[0]] = Array.isArray(existingVal) ? existingVal.concat(val) : [ existingVal, val ]
+
                 return obj
             }, {})
 }

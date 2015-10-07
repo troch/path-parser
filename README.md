@@ -26,12 +26,21 @@ p.partialMatch('/profile/00123/orders')       // => null
 p.build({id: '00123'})                       // => "users/profile/00123"
 ```
 
+Without `new`:
+
+```javascript
+var Path = require('path-parser');
+
+var p = Path.createPath('/users/profile/:id');
+```
+
 ## Defining parameters
 
 - `:param`: for URL parameters
 - `;param`: for matrix parameters
 - `*splat`: for parameters spanning over multiple segments. Handle with care
-- `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional
+- `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional.
+- `?param1=a&param1=b` will result in `{param1: ['a', 'b']}`
 
 ## Parameter constraints
 

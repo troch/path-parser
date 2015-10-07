@@ -98,7 +98,11 @@ var parseQueryParams = function parseQueryParams(path) {
     return searchPart.split('&').map(function (_) {
         return _.split('=');
     }).reduce(function (obj, m) {
-        obj[m[0]] = m[1] === undefined ? '' : m[1];
+        var val = m[1] === undefined ? '' : m[1];
+        var existingVal = obj[m[0]];
+
+        if (existingVal === undefined) obj[m[0]] = val;else obj[m[0]] = Array.isArray(existingVal) ? existingVal.concat(val) : [existingVal, val];
+
         return obj;
     }, {});
 };
@@ -108,6 +112,13 @@ var isSerialisable = function isSerialisable(val) {
 };
 
 var Path = (function () {
+    _createClass(Path, null, [{
+        key: 'createPath',
+        value: function createPath(path) {
+            return new Path(path);
+        }
+    }]);
+
     function Path(path) {
         _classCallCheck(this, Path);
 

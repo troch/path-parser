@@ -1,3 +1,14 @@
+<a name="0.4.0"></a>
+# 0.4.0 (2015-10-07)
+
+
+### Features
+
+* add Path.createPath constructor shortcut ([a45b781](https://github.com/troch/path-parser/commit/a45b781)), closes [#2](https://github.com/troch/path-parser/issues/2)
+* store multiple query parameters with the same key in an array ([3efd958](https://github.com/troch/path-parser/commit/3efd958)), closes [#3](https://github.com/troch/path-parser/issues/3)
+
+
+
 <a name="0.3.2"></a>
 ## 0.3.2 (2015-09-04)
 

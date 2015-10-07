@@ -79,20 +79,21 @@ let optTrailingSlash = (source, trailingSlash) => {
     return source.replace(/\\\/$/, '') + '(?:\\/)?'
 }
 
+let appendQueryParam = (params, param, val = '') => {
+    let existingVal = params[param]
+
+    if (existingVal === undefined) params[param] = val
+    else params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [ existingVal, val ]
+
+    return params
+}
+
 let parseQueryParams = path => {
     let searchPart = path.split('?')[1]
     if (!searchPart) return {}
     return searchPart.split('&')
             .map(_ => _.split('='))
-            .reduce((obj, m) => {
-                let val = m[1] === undefined ? '' : m[1]
-                let existingVal = obj[m[0]]
-
-                if (existingVal === undefined) obj[m[0]] = val
-                else obj[m[0]] = Array.isArray(existingVal) ? existingVal.concat(val) : [ existingVal, val ]
-
-                return obj
-            }, {})
+            .reduce((obj, m) => appendQueryParam(obj, m[0], m[1]), {})
 }
 
 let toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + val : ''
@@ -183,7 +184,7 @@ export default class Path {
 
         Object.keys(queryParams)
             .filter(p => this.queryParams.indexOf(p) >= 0)
-            .forEach(p => match[p] = queryParams[p])
+            .forEach(p => appendQueryParam(match, p, queryParams[p]))
 
         return match
     }

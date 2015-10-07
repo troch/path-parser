@@ -116,8 +116,14 @@
         }, {});
     };
 
-    var isSerialisable = function isSerialisable(val) {
-        return val !== undefined && val !== null && val !== '';
+    var toSerialisable = function toSerialisable(val) {
+        return val !== undefined && val !== null && val !== '' ? '=' + val : '';
+    };
+
+    var serialise = function serialise(key, val) {
+        return Array.isArray(val) ? val.map(function (v) {
+            return serialise(key, v);
+        }).join('&') : key + toSerialisable(val);
     };
 
     var Path = (function () {
@@ -286,7 +292,7 @@
                 var searchPart = this.queryParams.filter(function (p) {
                     return Object.keys(params).indexOf(p) !== -1;
                 }).map(function (p) {
-                    return p + (isSerialisable(params[p]) ? '=' + params[p] : '');
+                    return serialise(p, params[p]);
                 }).join('&');
 
                 return base + (searchPart ? '?' + searchPart : '');

@@ -1,3 +1,13 @@
+<a name="0.4.1"></a>
+## 0.4.1 (2015-10-07)
+
+
+### Features
+
+* build paths with query parameters as arrays ([9e0f644](https://github.com/troch/path-parser/commit/9e0f644))
+
+
+
 <a name="0.4.0"></a>
 # 0.4.0 (2015-10-07)
 

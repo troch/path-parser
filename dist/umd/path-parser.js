@@ -101,18 +101,23 @@
         return source.replace(/\\\/$/, '') + '(?:\\/)?';
     };
 
+    var appendQueryParam = function appendQueryParam(params, param) {
+        var val = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
+
+        var existingVal = params[param];
+
+        if (existingVal === undefined) params[param] = val;else params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [existingVal, val];
+
+        return params;
+    };
+
     var parseQueryParams = function parseQueryParams(path) {
         var searchPart = path.split('?')[1];
         if (!searchPart) return {};
         return searchPart.split('&').map(function (_) {
             return _.split('=');
         }).reduce(function (obj, m) {
-            var val = m[1] === undefined ? '' : m[1];
-            var existingVal = obj[m[0]];
-
-            if (existingVal === undefined) obj[m[0]] = val;else obj[m[0]] = Array.isArray(existingVal) ? existingVal.concat(val) : [existingVal, val];
-
-            return obj;
+            return appendQueryParam(obj, m[0], m[1]);
         }, {});
     };
 
@@ -251,7 +256,7 @@
                 Object.keys(queryParams).filter(function (p) {
                     return _this3.queryParams.indexOf(p) >= 0;
                 }).forEach(function (p) {
-                    return match[p] = queryParams[p];
+                    return appendQueryParam(match, p, queryParams[p]);
                 });
 
                 return match;

@@ -1,3 +1,13 @@
+<a name="0.4.2"></a>
+## 0.4.2 (2015-10-07)
+
+
+### Bug Fixes
+
+* format multiple query parameters with same key as array when matching partially ([d7f57f0](https://github.com/troch/path-parser/commit/d7f57f0))
+
+
+
 <a name="0.4.1"></a>
 ## 0.4.1 (2015-10-07)
 

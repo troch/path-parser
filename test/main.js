@@ -26,6 +26,10 @@ describe('Path', function () {
         }).should.throw();
     });
 
+    it('should return a path if createPath is used', function () {
+        should.exist(Path.createPath('/users'));
+    });
+
     it('should match and build paths with url parameters', function () {
         var path = new Path('/users/profile/:id-:id2.html');
         // Successful match & partial match

@@ -98,6 +98,10 @@ let parseQueryParams = path => {
 let isSerialisable = val => val !== undefined && val !== null && val !== ''
 
 export default class Path {
+    static createPath(path) {
+        return new Path(path)
+    }
+
     constructor(path) {
         if (!path) throw new Error('Please supply a path')
         this.path   = path

@@ -116,9 +116,9 @@ var toSerialisable = function toSerialisable(val) {
     return val !== undefined && val !== null && val !== '' ? '=' + val : '';
 };
 
-var serialise = function serialise(key, val) {
+var _serialise = function _serialise(key, val) {
     return Array.isArray(val) ? val.map(function (v) {
-        return serialise(key, v);
+        return _serialise(key, v);
     }).join('&') : key + toSerialisable(val);
 };
 
@@ -127,6 +127,11 @@ var Path = (function () {
         key: 'createPath',
         value: function createPath(path) {
             return new Path(path);
+        }
+    }, {
+        key: 'serialise',
+        value: function serialise(key, val) {
+            return _serialise(key, val);
         }
     }]);
 
@@ -288,7 +293,7 @@ var Path = (function () {
             var searchPart = this.queryParams.filter(function (p) {
                 return Object.keys(params).indexOf(p) !== -1;
             }).map(function (p) {
-                return serialise(p, params[p]);
+                return _serialise(p, params[p]);
             }).join('&');
 
             return base + (searchPart ? '?' + searchPart : '');

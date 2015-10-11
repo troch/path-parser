@@ -105,6 +105,10 @@ export default class Path {
         return new Path(path)
     }
 
+    static serialise(key, val) {
+        return serialise(key, val)
+    }
+
     constructor(path) {
         if (!path) throw new Error('Please supply a path')
         this.path   = path

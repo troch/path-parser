@@ -105,12 +105,12 @@ define(['exports', 'module'], function (exports, module) {
         return searchPart.split('&').map(function (_) {
             return _.split('=');
         }).reduce(function (obj, m) {
-            return appendQueryParam(obj, m[0], m[1]);
+            return appendQueryParam(obj, m[0], m[1] ? decodeURIComponent(m[1]) : m[1]);
         }, {});
     };
 
     var toSerialisable = function toSerialisable(val) {
-        return val !== undefined && val !== null && val !== '' ? '=' + val : '';
+        return val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : '';
     };
 
     var _serialise = function _serialise(key, val) {

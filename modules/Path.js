@@ -93,10 +93,10 @@ let parseQueryParams = path => {
     if (!searchPart) return {}
     return searchPart.split('&')
             .map(_ => _.split('='))
-            .reduce((obj, m) => appendQueryParam(obj, m[0], m[1]), {})
+            .reduce((obj, m) => appendQueryParam(obj, m[0], m[1] ? decodeURIComponent(m[1]) : m[1]), {})
 }
 
-let toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + val : ''
+let toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : ''
 
 let serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val)
 

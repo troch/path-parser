@@ -54,14 +54,14 @@ describe('Path', function () {
         path.match('/users?offset&limit=15').should.eql({ offset: '', limit: '15' });
         path.match('/users?limit=15').should.eql({ limit: '15' });
         path.partialMatch('/users?offset&limits=1').should.eql({ offset: '' });
-        path.partialMatch('/users?offset=1&offset=2&limits=1').should.eql({ offset: ['1', '2'] });
+        path.partialMatch('/users?offset=1&offset=2%202&limits=1').should.eql({ offset: ['1', '2 2'] });
         path.partialMatch('/users').should.eql({});
 
         // Unsuccessful match
         should.not.exist(path.match('/users?offset=31&order=asc'));
         should.not.exist(path.match('/users?offset=31&limit=10&order=asc'));
 
-        path.build({ offset: 31, limit: 15 }).should.equal('/users?offset=31&limit=15');
+        path.build({ offset: 31, limit: '15 15' }).should.equal('/users?offset=31&limit=15%2015');
         path.build({ offset: 31 }).should.equal('/users?offset=31');
         path.build({ offset: 31, limit: '' }).should.equal('/users?offset=31&limit');
         path.build({ offset: 31, limit: undefined  }).should.equal('/users?offset=31&limit');

@@ -24,6 +24,13 @@ const rules = [
     {
         // Query parameter: ?param1&param2
         //                   ?:param1&:param2
+        name:    'query-parameter-bracket',
+        pattern: /^(?:\?|&)(?:\:)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(?:\[\])/,
+        // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
+    },
+    {
+        // Query parameter: ?param1&param2
+        //                   ?:param1&:param2
         name:    'query-parameter',
         pattern: /^(?:\?|&)(?:\:)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/,
         // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
@@ -43,12 +50,12 @@ const rules = [
     {
         // Unmatched fragment (until delimiter is found)
         name:    'fragment',
-        pattern: /^([0-9a-zA-Z]+?)/,
+        pattern: /^([0-9a-zA-Z]+)/,
         regex:   match => new RegExp(match[0])
     }
 ]
 
-let tokenise = (str, tokens = []) => {
+const tokenise = (str, tokens = []) => {
     // Look for a matching rule
     let matched =
         rules.some(rule => {
@@ -66,39 +73,47 @@ let tokenise = (str, tokens = []) => {
             if (match[0].length < str.length) tokens = tokenise(str.substr(match[0].length), tokens)
             return true
         })
+
     // If no rules matched, throw an error (possible malformed path)
     if (!matched) {
         throw new Error('Could not parse path.')
     }
     // Return tokens
     return tokens
-}
+};
 
-let optTrailingSlash = (source, trailingSlash) => {
+const optTrailingSlash = (source, trailingSlash) => {
     if (!trailingSlash) return source
     return source.replace(/\\\/$/, '') + '(?:\\/)?'
-}
+};
 
-let appendQueryParam = (params, param, val = '') => {
-    let existingVal = params[param]
+const withoutBrackets = param => param.replace(/\[\]$/, '');
 
-    if (existingVal === undefined) params[param] = val
-    else params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [ existingVal, val ]
+const appendQueryParam = (params, param, val = '') => {
+    if (/\[\]$/.test(param)) {
+        param = withoutBrackets(param);
+        val = [ val ];
+    }
+    const existingVal = params[param];
 
-    return params
-}
+    if (existingVal === undefined) params[param] = val;
+    else params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [ existingVal, val ];
 
-let parseQueryParams = path => {
+    return params;
+};
+
+const parseQueryParams = path => {
     let searchPart = path.split('?')[1]
     if (!searchPart) return {}
+
     return searchPart.split('&')
             .map(_ => _.split('='))
             .reduce((obj, m) => appendQueryParam(obj, m[0], m[1] ? decodeURIComponent(m[1]) : m[1]), {})
-}
+};
 
-let toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : ''
+const toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : '';
 
-let serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val)
+const serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val);
 
 export default class Path {
     static createPath(path) {
@@ -117,7 +132,7 @@ export default class Path {
         this.hasUrlParams = this.tokens.filter(t => /^url-parameter/.test(t.type)).length > 0
         this.hasSpatParam = this.tokens.filter(t => /splat$/.test(t.type)).length > 0
         this.hasMatrixParams = this.tokens.filter(t => /matrix$/.test(t.type)).length > 0
-        this.hasQueryParams = this.tokens.filter(t => t.type === 'query-parameter').length > 0
+        this.hasQueryParams = this.tokens.filter(t => /^query-parameter/.test(t.type)).length > 0
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens
                             .filter(t => /^url-parameter/.test(t.type))
@@ -128,9 +143,14 @@ export default class Path {
         this.queryParams = !this.hasQueryParams ? [] : this.tokens
                             .filter(t => t.type === 'query-parameter')
                             .map(t => t.val)
-                            // Flatten
-                            .reduce((r, v) => r.concat(v))
-        this.params = this.urlParams.concat(this.queryParams)
+                            .reduce((r, v) => r.concat(v), []);
+
+        this.queryParamsBr = !this.hasQueryParams ? [] : this.tokens
+                            .filter(t => /-bracket$/.test(t.type))
+                            .map(t => t.val)
+                            .reduce((r, v) => r.concat(v), []);
+
+        this.params = this.urlParams.concat(this.queryParams).concat(this.queryParamsBr);
         // Check if hasQueryParams
         // Regular expressions for url part only (full and partial match)
         this.source = this.tokens
@@ -156,12 +176,13 @@ export default class Path {
         let source = optTrailingSlash(this.source, trailingSlash)
         // Check if exact match
         let match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')))
+
         // If no match, or no query params, no need to go further
         if (!match || !this.hasQueryParams) return match
         // Extract query params
         let queryParams = parseQueryParams(path)
         let unexpectedQueryParams = Object.keys(queryParams)
-            .filter(p => this.queryParams.indexOf(p) === -1)
+            .filter(p => this.queryParams.concat(this.queryParamsBr).indexOf(p) === -1 )
 
         if (unexpectedQueryParams.length === 0) {
             // Extend url match
@@ -187,7 +208,7 @@ export default class Path {
         let queryParams = parseQueryParams(path)
 
         Object.keys(queryParams)
-            .filter(p => this.queryParams.indexOf(p) >= 0)
+            .filter(p => this.queryParams.concat(this.queryParamsBr).indexOf(p) >= 0)
             .forEach(p => appendQueryParam(match, p, queryParams[p]))
 
         return match
@@ -207,18 +228,20 @@ export default class Path {
         }
 
         let base = this.tokens
-            .filter(t => t.type !== 'query-parameter')
+            .filter(t => /^query-parameter/.test(t.type) === false)
             .map(t => {
-                if (t.type === 'url-parameter-matrix') return `;${t.val[0]}=${params[t.val[0]]}`
+                if (t.type === 'url-parameter-matrix') return `;${t.val}=${params[t.val[0]]}`
                 return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
             })
             .join('')
 
         if (opts.ignoreSearch) return base
 
-        let searchPart = this.queryParams
-            .filter(p => Object.keys(params).indexOf(p) !== -1)
-            .map(p => serialise(p, params[p]))
+        const queryParams = this.queryParams.concat(this.queryParamsBr.map(p => p + '[]'));
+
+        let searchPart = queryParams
+            .filter(p => Object.keys(params).indexOf(withoutBrackets(p)) !== -1)
+            .map(p => serialise(p, params[withoutBrackets(p)]))
             .join('&')
 
         return base + (searchPart ? '?' + searchPart : '')

@@ -34,6 +34,12 @@ var rules = [{
 }, {
     // Query parameter: ?param1&param2
     //                   ?:param1&:param2
+    name: 'query-parameter-bracket',
+    pattern: /^(?:\?|&)(?:\:)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(?:\[\])/
+}, // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
+{
+    // Query parameter: ?param1&param2
+    //                   ?:param1&:param2
     name: 'query-parameter',
     pattern: /^(?:\?|&)(?:\:)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/
 }, // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
@@ -54,7 +60,7 @@ var rules = [{
 }, {
     // Unmatched fragment (until delimiter is found)
     name: 'fragment',
-    pattern: /^([0-9a-zA-Z]+?)/,
+    pattern: /^([0-9a-zA-Z]+)/,
     regex: function regex(match) {
         return new RegExp(match[0]);
     }
@@ -79,6 +85,7 @@ var tokenise = function tokenise(str) {
         if (match[0].length < str.length) tokens = tokenise(str.substr(match[0].length), tokens);
         return true;
     });
+
     // If no rules matched, throw an error (possible malformed path)
     if (!matched) {
         throw new Error('Could not parse path.');
@@ -92,9 +99,17 @@ var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
     return source.replace(/\\\/$/, '') + '(?:\\/)?';
 };
 
+var withoutBrackets = function withoutBrackets(param) {
+    return param.replace(/\[\]$/, '');
+};
+
 var appendQueryParam = function appendQueryParam(params, param) {
     var val = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
 
+    if (/\[\]$/.test(param)) {
+        param = withoutBrackets(param);
+        val = [val];
+    }
     var existingVal = params[param];
 
     if (existingVal === undefined) params[param] = val;else params[param] = Array.isArray(existingVal) ? existingVal.concat(val) : [existingVal, val];
@@ -105,6 +120,7 @@ var appendQueryParam = function appendQueryParam(params, param) {
 var parseQueryParams = function parseQueryParams(path) {
     var searchPart = path.split('?')[1];
     if (!searchPart) return {};
+
     return searchPart.split('&').map(function (_) {
         return _.split('=');
     }).reduce(function (obj, m) {
@@ -155,7 +171,8 @@ var Path = (function () {
             );
         }).length > 0;
         this.hasQueryParams = this.tokens.filter(function (t) {
-            return t.type === 'query-parameter';
+            return (/^query-parameter/.test(t.type)
+            );
         }).length > 0;
         // Extract named parameters from tokens
         this.urlParams = !this.hasUrlParams ? [] : this.tokens.filter(function (t) {
@@ -173,12 +190,20 @@ var Path = (function () {
             return t.type === 'query-parameter';
         }).map(function (t) {
             return t.val;
-        })
-        // Flatten
-        .reduce(function (r, v) {
+        }).reduce(function (r, v) {
             return r.concat(v);
-        });
-        this.params = this.urlParams.concat(this.queryParams);
+        }, []);
+
+        this.queryParamsBr = !this.hasQueryParams ? [] : this.tokens.filter(function (t) {
+            return (/-bracket$/.test(t.type)
+            );
+        }).map(function (t) {
+            return t.val;
+        }).reduce(function (r, v) {
+            return r.concat(v);
+        }, []);
+
+        this.params = this.urlParams.concat(this.queryParams).concat(this.queryParamsBr);
         // Check if hasQueryParams
         // Regular expressions for url part only (full and partial match)
         this.source = this.tokens.filter(function (t) {
@@ -212,12 +237,13 @@ var Path = (function () {
             var source = optTrailingSlash(this.source, trailingSlash);
             // Check if exact match
             var match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
+
             // If no match, or no query params, no need to go further
             if (!match || !this.hasQueryParams) return match;
             // Extract query params
             var queryParams = parseQueryParams(path);
             var unexpectedQueryParams = Object.keys(queryParams).filter(function (p) {
-                return _this2.queryParams.indexOf(p) === -1;
+                return _this2.queryParams.concat(_this2.queryParamsBr).indexOf(p) === -1;
             });
 
             if (unexpectedQueryParams.length === 0) {
@@ -250,7 +276,7 @@ var Path = (function () {
             var queryParams = parseQueryParams(path);
 
             Object.keys(queryParams).filter(function (p) {
-                return _this3.queryParams.indexOf(p) >= 0;
+                return _this3.queryParams.concat(_this3.queryParamsBr).indexOf(p) >= 0;
             }).forEach(function (p) {
                 return appendQueryParam(match, p, queryParams[p]);
             });
@@ -281,19 +307,24 @@ var Path = (function () {
             }
 
             var base = this.tokens.filter(function (t) {
-                return t.type !== 'query-parameter';
+                return (/^query-parameter/.test(t.type) === false
+                );
             }).map(function (t) {
-                if (t.type === 'url-parameter-matrix') return ';' + t.val[0] + '=' + params[t.val[0]];
+                if (t.type === 'url-parameter-matrix') return ';' + t.val + '=' + params[t.val[0]];
                 return (/^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
                 );
             }).join('');
 
             if (opts.ignoreSearch) return base;
 
-            var searchPart = this.queryParams.filter(function (p) {
-                return Object.keys(params).indexOf(p) !== -1;
+            var queryParams = this.queryParams.concat(this.queryParamsBr.map(function (p) {
+                return p + '[]';
+            }));
+
+            var searchPart = queryParams.filter(function (p) {
+                return Object.keys(params).indexOf(withoutBrackets(p)) !== -1;
             }).map(function (p) {
-                return _serialise(p, params[p]);
+                return _serialise(p, params[withoutBrackets(p)]);
             }).join('&');
 
             return base + (searchPart ? '?' + searchPart : '');

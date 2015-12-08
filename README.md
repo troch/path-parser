@@ -41,6 +41,7 @@ var p = Path.createPath('/users/profile/:id');
 - `*splat`: for parameters spanning over multiple segments. Handle with care
 - `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional.
 - `?param1=a&param1=b` will result in `{param1: ['a', 'b']}`
+- `?param1[]=a` and `?param1[]=a&param1[]=b` will result respectively in `{param1: ['a']}` and `{param1: ['a', 'b']}`
 
 ## Parameter constraints
 

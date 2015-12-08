@@ -1,3 +1,13 @@
+<a name="0.5.0"></a>
+# 0.5.0 (2015-12-08)
+
+
+### Features
+
+* add support for query parameters with brackets ([658d491](https://github.com/troch/path-parser/commit/658d491))
+
+
+
 <a name="0.4.4"></a>
 ## 0.4.4 (2015-11-24)
 

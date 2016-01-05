@@ -1,6 +1,6 @@
 {
   "name": "path-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A small utility to parse, match and generate paths",
   "main": "dist/commonjs/path-parser.js",
   "jsnext:main": "modules/Path.js",
@@ -38,7 +38,6 @@
     "babel-core": "^6.3.26",
     "babel-eslint": "^4.1.6",
     "babel-plugin-add-module-exports": "^0.1.2",
-    "babel-plugin-external-helpers-2": "^6.3.13",
     "babel-plugin-transform-class-properties": "^6.3.13",
     "babel-plugin-transform-export-extensions": "^6.3.13",
     "babel-plugin-transform-object-rest-spread": "^6.3.13",

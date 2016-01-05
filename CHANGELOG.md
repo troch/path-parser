@@ -1,3 +1,9 @@
+<a name="1.0.1"></a>
+## [1.0.1](https://github.com/troch/path-parser/compare/v1.0.0...v1.0.1) (2016-01-05)
+
+
+
+
 <a name="1.0.0"></a>
 # [1.0.0](https://github.com/troch/path-parser/compare/v0.5.0...v1.0.0) (2016-01-05)
 

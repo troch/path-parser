@@ -1,25 +1,11 @@
 {
+    "presets": [
+        "es2015"
+    ],
     "plugins": [
         "transform-object-rest-spread",
         "transform-class-properties",
-        "transform-export-extensions"
-    ],
-    "env": {
-        "development": {
-            "presets": [
-                "es2015"
-            ],
-            "plugins": [
-                "add-module-exports"
-            ]
-        },
-        "rollup": {
-            "presets": [
-                "es2015-rollup"
-            ],
-            "plugins": [
-                "external-helpers-2"
-            ]
-        }
-    }
+        "transform-export-extensions",
+        "add-module-exports"
+    ]
 }

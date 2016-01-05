@@ -10,7 +10,7 @@
     "lint": "eslint modules/*.js",
     "build:amd": "BABEL_ENV=rollup rollup -c rollup.config.js --format amd",
     "build:umd": "BABEL_ENV=rollup rollup -c rollup.config.js --format umd",
-    "build:cjs": "BABEL_ENV=rollup rollup -c rollup.config.js --format cjs",
+    "build:cjs": "mkdirp dist/commonjs && babel modules/Path.js -o dist/commonjs/path-parser.js",
     "clean": "rimraf dist",
     "build": "npm run clean && npm run build:amd && npm run build:umd && npm run build:cjs",
     "clog": "conventional-changelog -p angular -i CHANGELOG.md -w"
@@ -37,6 +37,7 @@
   "devDependencies": {
     "babel-core": "^6.3.26",
     "babel-eslint": "^4.1.6",
+    "babel-plugin-add-module-exports": "^0.1.2",
     "babel-plugin-external-helpers-2": "^6.3.13",
     "babel-plugin-transform-class-properties": "^6.3.13",
     "babel-plugin-transform-export-extensions": "^6.3.13",
@@ -47,6 +48,7 @@
     "coveralls": "^2.11.2",
     "eslint": "^1.10.3",
     "istanbul": "^0.3.16",
+    "mkdirp": "^0.5.1",
     "mocha": "^2.2.5",
     "rimraf": "^2.5.0",
     "rollup": "^0.24.0",

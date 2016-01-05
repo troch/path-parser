@@ -13,9 +13,9 @@ It is used by [route-node](https://github.com/troch/route-node)
 ## Usage
 
 ```javascript
-var Path = require('path-parser');
+import Path from 'path-parser';
 // Defining a new path
-var p = new Path('/users/profile/:id');
+const p = new Path('/users/profile/:id');
 // Matching
 p.match('/users/profile/00123')               // => {id: "00123"}
 // Partial matching: does this path
@@ -29,9 +29,15 @@ p.build({id: '00123'})                       // => "users/profile/00123"
 Without `new`:
 
 ```javascript
-var Path = require('path-parser');
+import Path from 'path-parser';
 
-var p = Path.createPath('/users/profile/:id');
+const p = Path.createPath('/users/profile/:id');
+```
+
+ES5:
+
+```javascript
+var Path = require('path-parser').default;
 ```
 
 ## Defining parameters

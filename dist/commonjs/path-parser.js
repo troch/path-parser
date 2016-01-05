@@ -1,30 +1,12 @@
 'use strict';
 
-var babelHelpers = {};
+var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-function babelHelpers_classCallCheck (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 
-var babelHelpers_createClass = (function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-})();
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var defaultOrConstrained = function defaultOrConstrained(match) {
     return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')';
@@ -157,7 +139,7 @@ var _serialise = function _serialise(key, val) {
 };
 
 var Path = (function () {
-    babelHelpers_createClass(Path, null, [{
+    _createClass(Path, null, [{
         key: 'createPath',
         value: function createPath(path) {
             return new Path(path);
@@ -170,7 +152,7 @@ var Path = (function () {
     }]);
 
     function Path(path) {
-        babelHelpers_classCallCheck(this, Path);
+        _classCallCheck(this, Path);
 
         if (!path) throw new Error('Please supply a path');
         this.path = path;
@@ -231,7 +213,7 @@ var Path = (function () {
         }).join('');
     }
 
-    babelHelpers_createClass(Path, [{
+    _createClass(Path, [{
         key: '_urlMatch',
         value: function _urlMatch(path, regex) {
             var _this = this;
@@ -348,7 +330,9 @@ var Path = (function () {
             return base + (searchPart ? '?' + searchPart : '');
         }
     }]);
+
     return Path;
 })();
 
-module.exports = Path;
+exports.default = Path;
+module.exports = exports['default'];

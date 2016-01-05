@@ -34,12 +34,6 @@ import Path from 'path-parser';
 const p = Path.createPath('/users/profile/:id');
 ```
 
-ES5:
-
-```javascript
-var Path = require('path-parser').default;
-```
-
 ## Defining parameters
 
 - `:param`: for URL parameters

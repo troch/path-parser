@@ -1,21 +1,34 @@
 (function (global, factory) {
-    if (typeof define === 'function' && define.amd) {
-        define(['exports', 'module'], factory);
-    } else if (typeof exports !== 'undefined' && typeof module !== 'undefined') {
-        factory(exports, module);
-    } else {
-        var mod = {
-            exports: {}
-        };
-        factory(mod.exports, mod);
-        global.Path = mod.exports;
-    }
-})(this, function (exports, module) {
-    'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define('Path', factory) :
+    (global.Path = factory());
+}(this, function () { 'use strict';
 
-    var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
+    var babelHelpers = {};
 
-    function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+    function babelHelpers_classCallCheck (instance, Constructor) {
+      if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+      }
+    };
+
+    var babelHelpers_createClass = (function () {
+      function defineProperties(target, props) {
+        for (var i = 0; i < props.length; i++) {
+          var descriptor = props[i];
+          descriptor.enumerable = descriptor.enumerable || false;
+          descriptor.configurable = true;
+          if ("value" in descriptor) descriptor.writable = true;
+          Object.defineProperty(target, descriptor.key, descriptor);
+        }
+      }
+
+      return function (Constructor, protoProps, staticProps) {
+        if (protoProps) defineProperties(Constructor.prototype, protoProps);
+        if (staticProps) defineProperties(Constructor, staticProps);
+        return Constructor;
+      };
+    })();
 
     var defaultOrConstrained = function defaultOrConstrained(match) {
         return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')';
@@ -148,7 +161,7 @@
     };
 
     var Path = (function () {
-        _createClass(Path, null, [{
+        babelHelpers_createClass(Path, null, [{
             key: 'createPath',
             value: function createPath(path) {
                 return new Path(path);
@@ -161,7 +174,7 @@
         }]);
 
         function Path(path) {
-            _classCallCheck(this, Path);
+            babelHelpers_classCallCheck(this, Path);
 
             if (!path) throw new Error('Please supply a path');
             this.path = path;
@@ -222,7 +235,7 @@
             }).join('');
         }
 
-        _createClass(Path, [{
+        babelHelpers_createClass(Path, [{
             key: '_urlMatch',
             value: function _urlMatch(path, regex) {
                 var _this = this;
@@ -245,10 +258,10 @@
                 // trailingSlash: falsy => non optional, truthy => optional
                 var source = optTrailingSlash(this.source, trailingSlash);
                 // Check if exact match
-                var match = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
+                var matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
 
                 // If no match, or no query params, no need to go further
-                if (!match || !this.hasQueryParams) return match;
+                if (!matched || !this.hasQueryParams) return matched;
                 // Extract query params
                 var queryParams = parseQueryParams(path);
                 var unexpectedQueryParams = Object.keys(queryParams).filter(function (p) {
@@ -258,10 +271,10 @@
                 if (unexpectedQueryParams.length === 0) {
                     // Extend url match
                     Object.keys(queryParams).forEach(function (p) {
-                        return match[p] = queryParams[p];
+                        return matched[p] = queryParams[p];
                     });
 
-                    return match;
+                    return matched;
                 }
 
                 return null;
@@ -339,9 +352,9 @@
                 return base + (searchPart ? '?' + searchPart : '');
             }
         }]);
-
         return Path;
     })();
 
-    module.exports = Path;
-});
+    return Path;
+
+}));

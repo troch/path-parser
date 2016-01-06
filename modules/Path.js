@@ -175,8 +175,7 @@ export default class Path {
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(this.source, trailingSlash);
         // Check if exact match
-        const matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
-
+        const matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
         // If no match, or no query params, no need to go further
         if (!matched || !this.hasQueryParams) return matched;
         // Extract query params

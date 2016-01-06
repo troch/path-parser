@@ -1,3 +1,13 @@
+<a name="1.0.2"></a>
+## [1.0.2](https://github.com/troch/path-parser/compare/v1.0.1...v1.0.2) (2016-01-06)
+
+
+### Bug Fixes
+
+* improve full path matching of a path with query params ([ada3897](https://github.com/troch/path-parser/commit/ada3897))
+
+
+
 <a name="1.0.1"></a>
 ## [1.0.1](https://github.com/troch/path-parser/compare/v1.0.0...v1.0.1) (2016-01-05)
 

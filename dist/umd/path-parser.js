@@ -258,8 +258,7 @@
                 // trailingSlash: falsy => non optional, truthy => optional
                 var source = optTrailingSlash(this.source, trailingSlash);
                 // Check if exact match
-                var matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '\\?.*$' : '$')));
-
+                var matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
                 // If no match, or no query params, no need to go further
                 if (!matched || !this.hasQueryParams) return matched;
                 // Extract query params

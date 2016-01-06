@@ -71,6 +71,16 @@ describe('Path', function () {
         path.build({ offset: 31, limit: 15 }, {ignoreSearch: true}).should.equal('/users');
     });
 
+    it('should correctly partialMatch "/"', function () {
+        var path = new Path('/');
+        // Successful match & partial match
+        path.partialMatch('/').should.eql({});
+
+        // Unsuccessful match
+        should.not.exist(path.match('/users?offset=31&order=asc'));
+        should.not.exist(path.partialMatch('/users?offset=31&order=asc'));
+    });
+
     it('should match and build paths of query parameters with square brackets', function () {
         var path = new Path('/users?offset&limit[]');
         path.build({ offset: 31, limit: ['15'] }).should.equal('/users?offset=31&limit[]=15');

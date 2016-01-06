@@ -4,8 +4,6 @@
     (global.Path = factory());
 }(this, function () { 'use strict';
 
-    var babelHelpers = {};
-
     function babelHelpers_classCallCheck (instance, Constructor) {
       if (!(instance instanceof Constructor)) {
         throw new TypeError("Cannot call a class as a function");
@@ -289,7 +287,13 @@
                 // Check if partial match (start of given path matches regex)
                 // trailingSlash: falsy => non optional, truthy => optional
                 var source = optTrailingSlash(this.source, trailingSlash);
-                var match = this._urlMatch(path, new RegExp('^' + source));
+
+                var match = undefined;
+                if (source === '\\/') {
+                    if (path === '/' || path.indexOf('/?') === 0) match = {};
+                } else {
+                    match = this._urlMatch(path, new RegExp('^' + source));
+                }
 
                 if (!match) return match;
 

@@ -199,7 +199,13 @@ export default class Path {
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
         let source = optTrailingSlash(this.source, trailingSlash);
-        let match = this._urlMatch(path, new RegExp('^' + source));
+
+        let match;
+        if (source === '\\/') {
+          if (path === '/' || path.indexOf('/?') === 0) match = {};
+        } else {
+          match = this._urlMatch(path, new RegExp('^' + source));
+        }
 
         if (!match) return match;
 

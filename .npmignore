@@ -1,2 +1,7 @@
+.*
 node_modules
-.babelrc
+npm-debug.log
+test
+*.md
+*.config.js
+*.json

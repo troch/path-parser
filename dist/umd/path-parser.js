@@ -31,7 +31,7 @@
     })();
 
     var defaultOrConstrained = function defaultOrConstrained(match) {
-        return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')';
+        return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%]+') + ')';
     };
 
     var rules = [{
@@ -244,7 +244,7 @@
                 if (!match) return null;else if (!this.urlParams.length) return {};
                 // Reduce named params to key-value pairs
                 return match.slice(1, this.urlParams.length + 1).reduce(function (params, m, i) {
-                    params[_this.urlParams[i]] = m;
+                    params[_this.urlParams[i]] = decodeURIComponent(m);
                     return params;
                 }, {});
             }

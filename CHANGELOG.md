@@ -1,3 +1,13 @@
+<a name="1.0.3"></a>
+## [1.0.3](https://github.com/troch/path-parser/compare/v1.0.2...v1.0.3) (2016-06-29)
+
+
+### Bug Fixes
+
+* allow encoded URI components in URL parameters ([ae1ad85](https://github.com/troch/path-parser/commit/ae1ad85)), closes [router5/router5#63](https://github.com/router5/router5/issues/63)
+
+
+
 <a name="1.0.2"></a>
 ## [1.0.2](https://github.com/troch/path-parser/compare/v1.0.1...v1.0.2) (2016-01-06)
 

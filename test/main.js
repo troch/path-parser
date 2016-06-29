@@ -2,7 +2,7 @@
 
 var path      = require('path');
 var pkg       = require('../package.json');
-var Path      = require(path.join(__dirname, '..', pkg.main));
+var Path      = require('../modules/Path');
 var should    = require('should');
 
 require('mocha');
@@ -167,5 +167,11 @@ describe('Path', function () {
         should.not.exist(path.match(''));
         path.match('/', true).should.eql({});
         path.match('', 1).should.eql({});
+    });
+
+    it('should match paths with encoded values', function () {
+        var path = new Path('/test/:id');
+
+        path.partialMatch('/test/%7B123-456%7D').should.eql({ id: '{123-456}' });
     });
 });

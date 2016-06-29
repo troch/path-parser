@@ -5,7 +5,7 @@
   "main": "dist/commonjs/path-parser.js",
   "jsnext:main": "modules/Path.js",
   "scripts": {
-    "test": "_mocha",
+    "test": "mocha --compilers js:babel-core/register",
     "test-cover": "istanbul cover _mocha",
     "lint": "eslint modules/*.js",
     "build:amd": "BABEL_ENV=rollup rollup -c rollup.config.js --format amd",

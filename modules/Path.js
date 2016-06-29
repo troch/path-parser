@@ -1,5 +1,5 @@
 const defaultOrConstrained = (match) =>
-    '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~]+') + ')';
+    '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%]+') + ')';
 
 const rules = [
     {
@@ -166,7 +166,7 @@ export default class Path {
         // Reduce named params to key-value pairs
         return match.slice(1, this.urlParams.length + 1)
                 .reduce((params, m, i) => {
-                    params[this.urlParams[i]] = m;
+                    params[this.urlParams[i]] = decodeURIComponent(m);
                     return params;
                 }, {});
     }

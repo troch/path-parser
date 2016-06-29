@@ -6,7 +6,7 @@
   "jsnext:main": "modules/Path.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
-    "test-cover": "istanbul cover _mocha",
+    "test-cover": "babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
     "lint": "eslint modules/*.js",
     "build:amd": "BABEL_ENV=rollup rollup -c rollup.config.js --format amd",
     "build:umd": "BABEL_ENV=rollup rollup -c rollup.config.js --format umd",
@@ -46,7 +46,7 @@
     "conventional-changelog": "^0.5.3",
     "coveralls": "^2.11.2",
     "eslint": "^1.10.3",
-    "istanbul": "^0.3.16",
+    "isparta": "~4.0.0",
     "mkdirp": "^0.5.1",
     "mocha": "^2.2.5",
     "rimraf": "^2.5.0",

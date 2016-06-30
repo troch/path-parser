@@ -147,7 +147,7 @@ define('Path', function () { 'use strict';
     };
 
     var toSerialisable = function toSerialisable(val) {
-        return val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : '';
+        return val !== undefined && val !== null && val !== '' ? '=' + val : '';
     };
 
     var _serialise = function _serialise(key, val) {
@@ -306,6 +306,15 @@ define('Path', function () { 'use strict';
                 var params = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
                 var opts = arguments.length <= 1 || arguments[1] === undefined ? { ignoreConstraints: false, ignoreSearch: false } : arguments[1];
 
+                var encodedParams = Object.keys(params).reduce(function (acc, key) {
+                    // Use encodeURI in case of spats
+                    if (params[key] === undefined) {
+                        acc[key] = undefined;
+                    } else {
+                        acc[key] = Array.isArray(params[key]) ? params[key].map(encodeURI) : encodeURI(params[key]);
+                    }
+                    return acc;
+                }, {});
                 // Check all params are provided (not search parameters which are optional)
                 if (this.urlParams.some(function (p) {
                     return params[p] === undefined;
@@ -317,7 +326,7 @@ define('Path', function () { 'use strict';
                         return (/^url-parameter/.test(t.type) && !/-splat$/.test(t.type)
                         );
                     }).every(function (t) {
-                        return new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]);
+                        return new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(encodedParams[t.val]);
                     });
 
                     if (!constraintsPassed) throw new Error('Some parameters are of invalid format');
@@ -327,8 +336,8 @@ define('Path', function () { 'use strict';
                     return (/^query-parameter/.test(t.type) === false
                     );
                 }).map(function (t) {
-                    if (t.type === 'url-parameter-matrix') return ';' + t.val + '=' + params[t.val[0]];
-                    return (/^url-parameter/.test(t.type) ? params[t.val[0]] : t.match
+                    if (t.type === 'url-parameter-matrix') return ';' + t.val + '=' + encodedParams[t.val[0]];
+                    return (/^url-parameter/.test(t.type) ? encodedParams[t.val[0]] : t.match
                     );
                 }).join('');
 
@@ -339,9 +348,9 @@ define('Path', function () { 'use strict';
                 }));
 
                 var searchPart = queryParams.filter(function (p) {
-                    return Object.keys(params).indexOf(withoutBrackets(p)) !== -1;
+                    return Object.keys(encodedParams).indexOf(withoutBrackets(p)) !== -1;
                 }).map(function (p) {
-                    return _serialise(p, params[withoutBrackets(p)]);
+                    return _serialise(p, encodedParams[withoutBrackets(p)]);
                 }).join('&');
 
                 return base + (searchPart ? '?' + searchPart : '');

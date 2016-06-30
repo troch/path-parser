@@ -1,3 +1,13 @@
+<a name="1.0.4"></a>
+## [1.0.4](https://github.com/troch/path-parser/compare/v1.0.3...v1.0.4) (2016-06-30)
+
+
+### Bug Fixes
+
+* encode all parameters and not only query parameters ([19d5131](https://github.com/troch/path-parser/commit/19d5131))
+
+
+
 <a name="1.0.3"></a>
 ## [1.0.3](https://github.com/troch/path-parser/compare/v1.0.2...v1.0.3) (2016-06-29)
 

@@ -174,4 +174,10 @@ describe('Path', function () {
 
         path.partialMatch('/test/%7B123-456%7D').should.eql({ id: '{123-456}' });
     });
+
+    it('should encoded values and build paths', function () {
+        var path = new Path('/test/:id');
+
+        path.build({ id: '{123-456}' }).should.equal('/test/%7B123-456%7D');
+    });
 });

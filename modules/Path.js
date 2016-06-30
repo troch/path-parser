@@ -111,7 +111,7 @@ const parseQueryParams = path => {
         .reduce((obj, m) => appendQueryParam(obj, m[0], m[1] ? decodeURIComponent(m[1]) : m[1]), {});
 };
 
-const toSerialisable = val => val !== undefined && val !== null && val !== '' ? '=' + encodeURIComponent(val) : '';
+const toSerialisable = val => val !== undefined && val !== null && val !== '' ? `=${val}` : '';
 
 const serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val);
 
@@ -214,6 +214,20 @@ export default class Path {
     }
 
     build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {
+        const encodedParams = Object.keys(params).reduce(
+            (acc, key) => {
+                // Use encodeURI in case of spats
+                if (params[key] === undefined) {
+                    acc[key] = undefined;
+                } else {
+                    acc[key] = Array.isArray(params[key])
+                        ? params[key].map(encodeURI)
+                        : encodeURI(params[key]);
+                }
+                return acc;
+            },
+            {}
+        );
         // Check all params are provided (not search parameters which are optional)
         if (this.urlParams.some(p => params[p] === undefined)) throw new Error('Missing parameters');
 
@@ -221,7 +235,7 @@ export default class Path {
         if (!opts.ignoreConstraints) {
             let constraintsPassed = this.tokens
                 .filter(t => /^url-parameter/.test(t.type) && !/-splat$/.test(t.type))
-                .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(params[t.val]));
+                .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(encodedParams[t.val]));
 
             if (!constraintsPassed) throw new Error('Some parameters are of invalid format');
         }
@@ -229,8 +243,8 @@ export default class Path {
         let base = this.tokens
             .filter(t => /^query-parameter/.test(t.type) === false)
             .map(t => {
-                if (t.type === 'url-parameter-matrix') return `;${t.val}=${params[t.val[0]]}`;
-                return /^url-parameter/.test(t.type) ? params[t.val[0]] : t.match;
+                if (t.type === 'url-parameter-matrix') return `;${t.val}=${encodedParams[t.val[0]]}`;
+                return /^url-parameter/.test(t.type) ? encodedParams[t.val[0]] : t.match;
             })
             .join('');
 
@@ -239,8 +253,8 @@ export default class Path {
         const queryParams = this.queryParams.concat(this.queryParamsBr.map(p => p + '[]'));
 
         const searchPart = queryParams
-            .filter(p => Object.keys(params).indexOf(withoutBrackets(p)) !== -1)
-            .map(p => serialise(p, params[withoutBrackets(p)]))
+            .filter(p => Object.keys(encodedParams).indexOf(withoutBrackets(p)) !== -1)
+            .map(p => serialise(p, encodedParams[withoutBrackets(p)]))
             .join('&');
 
         return base + (searchPart ? '?' + searchPart : '');

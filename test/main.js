@@ -51,10 +51,10 @@ describe('Path', function () {
         // Successful match & partial match
         path.match('/users?offset=31&limit=15').should.eql({ offset: '31', limit: '15' });
         path.match('/users?offset=31&offset=30&limit=15').should.eql({ offset: ['31', '30'], limit: '15' });
-        path.match('/users?offset&limit=15').should.eql({ offset: '', limit: '15' });
+        path.match('/users?offset&limit=15').should.eql({ offset: true, limit: '15' });
         path.match('/users?limit=15').should.eql({ limit: '15' });
         path.match('/users?limit=15').should.eql({ limit: '15' });
-        path.partialMatch('/users?offset&limits=1').should.eql({ offset: '' });
+        path.partialMatch('/users?offset&limits=1').should.eql({ offset: true });
         path.partialMatch('/users?offset=1&offset=2%202&limits=1').should.eql({ offset: ['1', '2 2'] });
         path.partialMatch('/users').should.eql({});
 
@@ -64,9 +64,10 @@ describe('Path', function () {
 
         path.build({ offset: 31, limit: '15 15' }).should.equal('/users?offset=31&limit=15%2015');
         path.build({ offset: 31 }).should.equal('/users?offset=31');
-        path.build({ offset: 31, limit: '' }).should.equal('/users?offset=31&limit');
-        path.build({ offset: 31, limit: undefined  }).should.equal('/users?offset=31&limit');
+        path.build({ offset: 31, limit: '' }).should.equal('/users?offset=31&limit=');
+        path.build({ offset: 31, limit: undefined  }).should.equal('/users?offset=31');
         path.build({ offset: 31, limit: false  }).should.equal('/users?offset=31&limit=false');
+        path.build({ offset: 31, limit: true  }).should.equal('/users?offset=31&limit');
         path.build({ offset: [31, 30], limit: false  }).should.equal('/users?offset=31&offset=30&limit=false');
         path.build({ offset: 31, limit: 15 }, {ignoreSearch: true}).should.equal('/users');
     });

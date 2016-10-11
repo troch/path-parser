@@ -1,3 +1,5 @@
+import { getSearch, withoutBrackets, parse, toObject } from 'search-params';
+
 const defaultOrConstrained = (match) =>
     '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%]+') + ')';
 
@@ -54,6 +56,8 @@ const rules = [
     }
 ];
 
+const exists = (val) => val !== undefined && val !== null;
+
 const tokenise = (str, tokens = []) => {
     // Look for a matching rule
     const matched =
@@ -86,8 +90,6 @@ const optTrailingSlash = (source, trailingSlash) => {
     return source.replace(/\\\/$/, '') + '(?:\\/)?';
 };
 
-const withoutBrackets = param => param.replace(/\[\]$/, '');
-
 const appendQueryParam = (params, param, val = '') => {
     if (/\[\]$/.test(param)) {
         param = withoutBrackets(param);
@@ -102,18 +104,23 @@ const appendQueryParam = (params, param, val = '') => {
 };
 
 const parseQueryParams = path => {
-    let searchPart = path.split('?')[1];
+    let searchPart = getSearch(path);
     if (!searchPart) return {};
 
-    return searchPart
-        .split('&')
-        .map(_ => _.split('='))
-        .reduce((obj, m) => appendQueryParam(obj, m[0], m[1] ? decodeURIComponent(m[1]) : m[1]), {});
+    return toObject(parse(searchPart));
 };
 
-const toSerialisable = val => val !== undefined && val !== null && val !== '' ? `=${val}` : '';
+function serialise(key, val) {
+    if (Array.isArray(val)) {
+        return val.map(v => serialise(key, v)).join('&');
+    }
 
-const serialise = (key, val) => Array.isArray(val) ? val.map(v => serialise(key, v)).join('&') : key + toSerialisable(val);
+    if (val === true) {
+        return key;
+    }
+
+    return `${key}=${val}`;
+}
 
 export default class Path {
     static createPath(path) {
@@ -217,19 +224,27 @@ export default class Path {
         const encodedParams = Object.keys(params).reduce(
             (acc, key) => {
                 // Use encodeURI in case of spats
-                if (params[key] === undefined) {
-                    acc[key] = undefined;
-                } else {
-                    acc[key] = Array.isArray(params[key])
-                        ? params[key].map(encodeURI)
-                        : encodeURI(params[key]);
+                if (!exists(params[key])) {
+                    return acc;
                 }
+
+                const val = params[key];
+
+                if (typeof val === 'boolean') {
+                    acc[key] = val;
+                } else if (Array.isArray(val)) {
+                    acc[key] = val.map(encodeURI);
+                } else {
+                    acc[key] = encodeURI(val);
+                }
+
                 return acc;
             },
             {}
         );
+
         // Check all params are provided (not search parameters which are optional)
-        if (this.urlParams.some(p => params[p] === undefined)) throw new Error('Missing parameters');
+        if (this.urlParams.some(p => !exists(encodedParams[p]))) throw new Error('Missing parameters');
 
         // Check constraints
         if (!opts.ignoreConstraints) {

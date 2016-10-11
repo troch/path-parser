@@ -141,22 +141,12 @@ export default class Path {
         this.hasMatrixParams = this.tokens.filter(t => /matrix$/.test(t.type)).length > 0;
         this.hasQueryParams = this.tokens.filter(t => /^query-parameter/.test(t.type)).length > 0;
         // Extract named parameters from tokens
-        this.urlParams = !this.hasUrlParams ? [] : this.tokens
-                            .filter(t => /^url-parameter/.test(t.type))
-                            .map(t => t.val.slice(0, 1))
-                            // Flatten
-                            .reduce((r, v) => r.concat(v));
+        this.spatParams = this._getParams('url-parameter-splat');
+        this.urlParams = this._getParams(/^url-parameter/);
         // Query params
-        this.queryParams = !this.hasQueryParams ? [] : this.tokens
-                            .filter(t => t.type === 'query-parameter')
-                            .map(t => t.val)
-                            .reduce((r, v) => r.concat(v), []);
-
-        this.queryParamsBr = !this.hasQueryParams ? [] : this.tokens
-                            .filter(t => /-bracket$/.test(t.type))
-                            .map(t => t.val)
-                            .reduce((r, v) => r.concat(v), []);
-
+        this.queryParams = this._getParams('query-parameter');
+        this.queryParamsBr = this._getParams('query-parameter-bracket');
+        // All params
         this.params = this.urlParams.concat(this.queryParams).concat(this.queryParamsBr);
         // Check if hasQueryParams
         // Regular expressions for url part only (full and partial match)
@@ -164,6 +154,20 @@ export default class Path {
                         .filter(t => t.regex !== undefined)
                         .map(r => r.regex.source)
                         .join('');
+    }
+
+    _getParams(type) {
+        const predicate = type instanceof RegExp
+            ? t => type.test(t.type)
+            : t => t.type === type;
+
+        return this.tokens
+            .filter(predicate)
+            .map(t => t.val[0]);
+    }
+
+    _isSpatParam(name) {
+        return this.spatParams.indexOf(name) !== -1;
     }
 
     _urlMatch(path, regex) {
@@ -178,9 +182,10 @@ export default class Path {
                 }, {});
     }
 
-    match(path, trailingSlash = 0) {
+    match(path, opts) {
+        const options = { trailingSlash: false, ...opts };
         // trailingSlash: falsy => non optional, truthy => optional
-        const source = optTrailingSlash(this.source, trailingSlash);
+        const source = optTrailingSlash(this.source, options.trailingSlash);
         // Check if exact match
         const matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
         // If no match, or no query params, no need to go further
@@ -201,10 +206,11 @@ export default class Path {
         return null;
     }
 
-    partialMatch(path, trailingSlash = 0) {
+    partialMatch(path, opts) {
+        const options = { trailingSlash: false, ...opts };
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
-        let source = optTrailingSlash(this.source, trailingSlash);
+        let source = optTrailingSlash(this.source, options.trailingSlash);
         let match = this._urlMatch(path, new RegExp('^' + source));
 
         if (!match) return match;
@@ -220,22 +226,23 @@ export default class Path {
         return match;
     }
 
-    build(params = {}, opts = {ignoreConstraints: false, ignoreSearch: false}) {
+    build(params = {}, opts = {}) {
+        const options = { ignoreConstraints: false, ignoreSearch: false, ...opts };
         const encodedParams = Object.keys(params).reduce(
             (acc, key) => {
-                // Use encodeURI in case of spats
                 if (!exists(params[key])) {
                     return acc;
                 }
 
                 const val = params[key];
+                const encode = this._isSpatParam(key) ? encodeURI : encodeURIComponent;
 
                 if (typeof val === 'boolean') {
                     acc[key] = val;
                 } else if (Array.isArray(val)) {
-                    acc[key] = val.map(encodeURI);
+                    acc[key] = val.map(encode);
                 } else {
-                    acc[key] = encodeURI(val);
+                    acc[key] = encode(val);
                 }
 
                 return acc;
@@ -247,7 +254,7 @@ export default class Path {
         if (this.urlParams.some(p => !exists(encodedParams[p]))) throw new Error('Missing parameters');
 
         // Check constraints
-        if (!opts.ignoreConstraints) {
+        if (!options.ignoreConstraints) {
             let constraintsPassed = this.tokens
                 .filter(t => /^url-parameter/.test(t.type) && !/-splat$/.test(t.type))
                 .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(encodedParams[t.val]));
@@ -263,7 +270,7 @@ export default class Path {
             })
             .join('');
 
-        if (opts.ignoreSearch) return base;
+        if (options.ignoreSearch) return base;
 
         const queryParams = this.queryParams.concat(this.queryParamsBr.map(p => p + '[]'));
 

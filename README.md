@@ -69,7 +69,7 @@ When using `.match()` or `.partialMatch()`, you can path a second argument. If t
 var path = new Path('/my-path');
 
 path.match('/my-path/')       // => null
-path.match('/my-path/', true) // => {}
+path.match('/my-path/', { trailingSlash: true }) // => {}
 ```
 
 ## Related modules

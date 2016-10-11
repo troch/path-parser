@@ -156,18 +156,18 @@ describe('Path', function () {
     it('should match paths with optional trailing slashes', function () {
         var path = new Path('/my-path');
         should.not.exist(path.match('/my-path/'));
-        path.match('/my-path/', true).should.eql({});
-        path.match('/my-path/', 1).should.eql({});
+        path.match('/my-path/', { trailingSlash: true }).should.eql({});
+        path.match('/my-path/', { trailingSlash: 1 }).should.eql({});
 
         path = new Path('/my-path/');
         should.not.exist(path.match('/my-path'));
-        path.match('/my-path', true).should.eql({});
-        path.match('/my-path', 1).should.eql({});
+        path.match('/my-path', { trailingSlash: true }).should.eql({});
+        path.match('/my-path', { trailingSlash: 1 }).should.eql({});
 
         path = new Path('/');
         should.not.exist(path.match(''));
-        path.match('/', true).should.eql({});
-        path.match('', 1).should.eql({});
+        path.match('/', { trailingSlash: true }).should.eql({});
+        path.match('', { trailingSlash: 1 }).should.eql({});
     });
 
     it('should match paths with encoded values', function () {

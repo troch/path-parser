@@ -63,7 +63,20 @@ path.build({id: 'not-a-number'}, {ignoreConstraints: true}); // => '/users/profi
 
 ## Optional trailing slashes
 
-When using `.match()` or `.partialMatch()`, you can path a second argument. If truthy, it will make trailing slashes optional.
+`.match(path, options)` accepts an option object:
+- `trailingSlash`: if truthy, it will make trailing slashes optional (default to `true`).
+
+```javascript
+var path = new Path('/my-path');
+
+path.match('/my-path/')       // => null
+path.match('/my-path/', { trailingSlash: true }) // => {}
+```
+
+## Partial match with delimiters
+
+`.partialMatch(path, options)` accepts an option object:
+- `delimited`: if truthy, a partial match will only be successful if a delimiter is found at the end of a match (default to `true`, delimiters are `/`, `?`, `.` and `;`).
 
 ```javascript
 var path = new Path('/my-path');

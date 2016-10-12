@@ -90,6 +90,11 @@ const optTrailingSlash = (source, trailingSlash) => {
     return source.replace(/\\\/$/, '') + '(?:\\/)?';
 };
 
+const upToDelimiter = (source, delimiter) => {
+    if (!delimiter) return source;
+    return source.replace(/\\(\/|\?|\.|;)$/, '') + '(\\/|\\?|\\.|;|$)';
+};
+
 const appendQueryParam = (params, param, val = '') => {
     if (/\[\]$/.test(param)) {
         param = withoutBrackets(param);
@@ -207,10 +212,10 @@ export default class Path {
     }
 
     partialMatch(path, opts) {
-        const options = { trailingSlash: false, ...opts };
+        const options = { delimited: true, ...opts };
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
-        let source = optTrailingSlash(this.source, options.trailingSlash);
+        let source = upToDelimiter(this.source, options.delimited);
         let match = this._urlMatch(path, new RegExp('^' + source));
 
         if (!match) return match;

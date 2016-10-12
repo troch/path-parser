@@ -181,4 +181,12 @@ describe('Path', function () {
 
         path.build({ id: '{123-456}' }).should.equal('/test/%7B123-456%7D');
     });
+
+    it('should partial match up to a delimiter', function () {
+        var path = new Path('/univers');
+
+        should.not.exist(path.partialMatch('/university'));
+        path.partialMatch('/university', { delimited: false }).should.eql({});
+        path.partialMatch('/univers/hello').should.eql({});
+    });
 });

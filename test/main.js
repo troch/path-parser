@@ -33,12 +33,12 @@ describe('Path', function () {
     it('should match and build paths with url parameters', function () {
         var path = new Path('/users/profile/:id-:id2.html');
         // Successful match & partial match
-        path.match('/users/profile/123-abc.html').should.eql({ id: '123', id2: 'abc' });
-        path.partialMatch('/users/profile/123-abc.html?what').should.eql({ id: '123', id2: 'abc' });
+        path.test('/users/profile/123-abc.html').should.eql({ id: '123', id2: 'abc' });
+        path.partialTest('/users/profile/123-abc.html?what').should.eql({ id: '123', id2: 'abc' });
         // Unsuccessful match
-        should.not.exist(path.match('/users/details/123-abc'));
-        should.not.exist(path.match('/users/details/123-abc.html'));
-        should.not.exist(path.match('/users/profile/123-abc.html?what'));
+        should.not.exist(path.test('/users/details/123-abc'));
+        should.not.exist(path.test('/users/details/123-abc.html'));
+        should.not.exist(path.test('/users/profile/123-abc.html?what'));
 
         path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html');
         (function () {
@@ -49,18 +49,18 @@ describe('Path', function () {
     it('should match and build paths with query parameters', function () {
         var path = new Path('/users?offset&limit');
         // Successful match & partial match
-        path.match('/users?offset=31&limit=15').should.eql({ offset: '31', limit: '15' });
-        path.match('/users?offset=31&offset=30&limit=15').should.eql({ offset: ['31', '30'], limit: '15' });
-        path.match('/users?offset&limit=15').should.eql({ offset: true, limit: '15' });
-        path.match('/users?limit=15').should.eql({ limit: '15' });
-        path.match('/users?limit=15').should.eql({ limit: '15' });
-        path.partialMatch('/users?offset&limits=1').should.eql({ offset: true });
-        path.partialMatch('/users?offset=1&offset=2%202&limits=1').should.eql({ offset: ['1', '2 2'] });
-        path.partialMatch('/users').should.eql({});
+        path.test('/users?offset=31&limit=15').should.eql({ offset: '31', limit: '15' });
+        path.test('/users?offset=31&offset=30&limit=15').should.eql({ offset: ['31', '30'], limit: '15' });
+        path.test('/users?offset&limit=15').should.eql({ offset: true, limit: '15' });
+        path.test('/users?limit=15').should.eql({ limit: '15' });
+        path.test('/users?limit=15').should.eql({ limit: '15' });
+        path.partialTest('/users?offset&limits=1').should.eql({ offset: true });
+        path.partialTest('/users?offset=1&offset=2%202&limits=1').should.eql({ offset: ['1', '2 2'] });
+        path.partialTest('/users').should.eql({});
 
         // Unsuccessful match
-        should.not.exist(path.match('/users?offset=31&order=asc'));
-        should.not.exist(path.match('/users?offset=31&limit=10&order=asc'));
+        should.not.exist(path.test('/users?offset=31&order=asc'));
+        should.not.exist(path.test('/users?offset=31&limit=10&order=asc'));
 
         path.build({ offset: 31, limit: '15 15' }).should.equal('/users?offset=31&limit=15%2015');
         path.build({ offset: 31 }).should.equal('/users?offset=31');
@@ -77,19 +77,19 @@ describe('Path', function () {
         path.build({ offset: 31, limit: ['15'] }).should.equal('/users?offset=31&limit[]=15');
         path.build({ offset: 31, limit: ['15', '16'] }).should.equal('/users?offset=31&limit[]=15&limit[]=16');
 
-        path.match('/users?offset=31&limit[]=15').should.eql({ offset: '31', limit: ['15'] });
-        path.match('/users?offset=31&limit[]=15&limit[]=16').should.eql({ offset: '31', limit: ['15', '16'] });
+        path.test('/users?offset=31&limit[]=15').should.eql({ offset: '31', limit: ['15'] });
+        path.test('/users?offset=31&limit[]=15&limit[]=16').should.eql({ offset: '31', limit: ['15', '16'] });
     });
 
     it('should match and build paths with url and query parameters', function () {
         var path = new Path('/users/profile/:id-:id2?:id3');
         path.hasQueryParams.should.be.true;
         // Successful match & partial match
-        path.match('/users/profile/123-456?id3=789').should.eql({ id: '123', id2: '456', id3: '789' });
-        path.partialMatch('/users/profile/123-456').should.eql({ id: '123', id2: '456' });
+        path.test('/users/profile/123-456?id3=789').should.eql({ id: '123', id2: '456', id3: '789' });
+        path.partialTest('/users/profile/123-456').should.eql({ id: '123', id2: '456' });
         // Un,successful match
-        should.not.exist(path.match('/users/details/123-456'));
-        should.not.exist(path.match('/users/profile/123-456?id3=789&id4=000'));
+        should.not.exist(path.test('/users/details/123-456'));
+        should.not.exist(path.test('/users/profile/123-456?id3=789&id4=000'));
 
         path.build({ id: '123', id2: '456', id3: '789' }).should.equal('/users/profile/123-456?id3=789')
     });
@@ -98,8 +98,8 @@ describe('Path', function () {
         var path = new Path('/users/*splat');
         path.hasSpatParam.should.be.true;
         // Successful match
-        path.match('/users/profile/123').should.eql({ splat: 'profile/123'});
-        path.match('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage/view/123'});
+        path.test('/users/profile/123').should.eql({ splat: 'profile/123'});
+        path.test('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage/view/123'});
         // Build path
         path.build({ splat: 'profile/123'}).should.equal('/users/profile/123');
     });
@@ -108,15 +108,15 @@ describe('Path', function () {
         var path = new Path('/users/*splat/view/:id');
         path.hasSpatParam.should.be.true;
         // Successful match
-        path.match('/users/profile/view/123').should.eql({ splat: 'profile', id: '123' });
-        path.match('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage', id: '123' });
+        path.test('/users/profile/view/123').should.eql({ splat: 'profile', id: '123' });
+        path.test('/users/admin/manage/view/123').should.eql({ splat: 'admin/manage', id: '123' });
     });
 
     it('should match and build paths with url, splat and query parameters', function () {
         var path = new Path('/:section/*splat?id');
         path.hasSpatParam.should.be.true;
         // Successful match
-        path.match('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
+        path.test('/users/profile/view?id=123').should.eql({ section: 'users', splat: 'profile/view', id: '123' });
         path.build({section: 'users', splat: 'profile/view', id: '123'}).should.equal('/users/profile/view?id=123');
     })
 
@@ -126,7 +126,7 @@ describe('Path', function () {
         // Build path
         path.build({ section: 'profile', id: '123'}).should.equal('/users/;section=profile;id=123');
         // Successful match
-        path.match('/users/;section=profile;id=123').should.eql({ section: 'profile', id: '123' });
+        path.test('/users/;section=profile;id=123').should.eql({ section: 'profile', id: '123' });
     });
 
     it('should match and build paths with constrained parameters', function () {
@@ -134,8 +134,8 @@ describe('Path', function () {
         // Build path
         path.build({id: 99}).should.equal('/users/99');
         // Match path
-        path.match('/users/11').should.eql({id: '11'});
-        should.not.exist(path.match('/users/thomas'));
+        path.test('/users/11').should.eql({id: '11'});
+        should.not.exist(path.test('/users/thomas'));
 
         path = new Path('/users/;id<[A-F0-9]{6}>');
         // Build path
@@ -149,31 +149,31 @@ describe('Path', function () {
 
 
         // Match path
-        path.match('/users/;id=A76FE4').should.eql({id: 'A76FE4'});
-        should.not.exist(path.match('/users;id=Z12345'));
+        path.test('/users/;id=A76FE4').should.eql({id: 'A76FE4'});
+        should.not.exist(path.test('/users;id=Z12345'));
     });
 
     it('should match paths with optional trailing slashes', function () {
         var path = new Path('/my-path');
-        should.not.exist(path.match('/my-path/'));
-        path.match('/my-path/', { trailingSlash: true }).should.eql({});
-        path.match('/my-path/', { trailingSlash: 1 }).should.eql({});
+        should.not.exist(path.test('/my-path/'));
+        path.test('/my-path/', { trailingSlash: true }).should.eql({});
+        path.test('/my-path/', { trailingSlash: 1 }).should.eql({});
 
         path = new Path('/my-path/');
-        should.not.exist(path.match('/my-path'));
-        path.match('/my-path', { trailingSlash: true }).should.eql({});
-        path.match('/my-path', { trailingSlash: 1 }).should.eql({});
+        should.not.exist(path.test('/my-path'));
+        path.test('/my-path', { trailingSlash: true }).should.eql({});
+        path.test('/my-path', { trailingSlash: 1 }).should.eql({});
 
         path = new Path('/');
-        should.not.exist(path.match(''));
-        path.match('/', { trailingSlash: true }).should.eql({});
-        path.match('', { trailingSlash: 1 }).should.eql({});
+        should.not.exist(path.test(''));
+        path.test('/', { trailingSlash: true }).should.eql({});
+        path.test('', { trailingSlash: 1 }).should.eql({});
     });
 
     it('should match paths with encoded values', function () {
         var path = new Path('/test/:id');
 
-        path.partialMatch('/test/%7B123-456%7D').should.eql({ id: '{123-456}' });
+        path.partialTest('/test/%7B123-456%7D').should.eql({ id: '{123-456}' });
     });
 
     it('should encoded values and build paths', function () {
@@ -185,8 +185,8 @@ describe('Path', function () {
     it('should partial match up to a delimiter', function () {
         var path = new Path('/univers');
 
-        should.not.exist(path.partialMatch('/university'));
-        path.partialMatch('/university', { delimited: false }).should.eql({});
-        path.partialMatch('/univers/hello').should.eql({});
+        should.not.exist(path.partialTest('/university'));
+        path.partialTest('/university', { delimited: false }).should.eql({});
+        path.partialTest('/univers/hello').should.eql({});
     });
 });

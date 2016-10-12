@@ -175,7 +175,7 @@ export default class Path {
         return this.spatParams.indexOf(name) !== -1;
     }
 
-    _urlMatch(path, regex) {
+    _urlTest(path, regex) {
         let match = path.match(regex);
         if (!match) return null;
         else if (!this.urlParams.length) return {};
@@ -187,12 +187,12 @@ export default class Path {
                 }, {});
     }
 
-    match(path, opts) {
+    test(path, opts) {
         const options = { trailingSlash: false, ...opts };
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(this.source, options.trailingSlash);
         // Check if exact match
-        const matched = this._urlMatch(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
+        const matched = this._urlTest(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
         // If no match, or no query params, no need to go further
         if (!matched || !this.hasQueryParams) return matched;
         // Extract query params
@@ -211,12 +211,12 @@ export default class Path {
         return null;
     }
 
-    partialMatch(path, opts) {
+    partialTest(path, opts) {
         const options = { delimited: true, ...opts };
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
         let source = upToDelimiter(this.source, options.delimited);
-        let match = this._urlMatch(path, new RegExp('^' + source));
+        let match = this._urlTest(path, new RegExp('^' + source));
 
         if (!match) return match;
 

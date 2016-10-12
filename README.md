@@ -5,9 +5,9 @@
 # path-parser
 
 A small utility to parse and build paths. It can be used to partially or fully
-match paths against a defined pattern.
+test paths against a defined pattern.
 
-Partial match allows to determine if a given path starts with the defined pattern.
+Partial testing allows to determine if a given path starts with the defined pattern.
 It is used by [route-node](https://github.com/troch/route-node)
 
 ## Usage
@@ -17,11 +17,11 @@ import Path from 'path-parser';
 // Defining a new path
 const p = new Path('/users/profile/:id');
 // Matching
-p.match('/users/profile/00123')               // => {id: "00123"}
-// Partial matching: does this path
+p.test('/users/profile/00123')               // => {id: "00123"}
+// Partial testing: does this path
 // starts with that pattern?
-p.partialMatch('/users/profile/00123/orders') // => {id: "00123"}
-p.partialMatch('/profile/00123/orders')       // => null
+p.partialTest('/users/profile/00123/orders') // => {id: "00123"}
+p.partialTest('/profile/00123/orders')       // => null
 // Building
 p.build({id: '00123'})                       // => "users/profile/00123"
 ```
@@ -63,26 +63,27 @@ path.build({id: 'not-a-number'}, {ignoreConstraints: true}); // => '/users/profi
 
 ## Optional trailing slashes
 
-`.match(path, options)` accepts an option object:
+`.test(path, options)` accepts an option object:
 - `trailingSlash`: if truthy, it will make trailing slashes optional (default to `true`).
 
 ```javascript
 var path = new Path('/my-path');
 
-path.match('/my-path/')       // => null
-path.match('/my-path/', { trailingSlash: true }) // => {}
+path.test('/my-path/')       // => null
+path.test('/my-path/', { trailingSlash: true }) // => {}
 ```
 
-## Partial match with delimiters
+## Partial test with delimiters
 
-`.partialMatch(path, options)` accepts an option object:
-- `delimited`: if truthy, a partial match will only be successful if a delimiter is found at the end of a match (default to `true`, delimiters are `/`, `?`, `.` and `;`).
+`.partialTest(path, options)` accepts an option object:
+- `delimited`: if truthy, a partial test will only be successful if a delimiter is found at the end of a match (default to `true`, delimiters are `/`, `?`, `.` and `;`).
 
 ```javascript
 var path = new Path('/my-path');
 
-path.match('/my-path/')       // => null
-path.match('/my-path/', { trailingSlash: true }) // => {}
+path.partialTest('/my-path/extended')       // => {}
+path.partialTest('/my-path-extended')       // => null
+path.partialTest('/my-path-extended', { delimited: false }) // => {}
 ```
 
 ## Related modules

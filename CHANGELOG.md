@@ -1,3 +1,19 @@
+<a name="2.0.0"></a>
+# [2.0.0](https://github.com/troch/path-parser/compare/v1.0.4...v2.0.0) (2016-10-12)
+
+
+### Features
+
+* add a 'delimited' option to partialMatch ([969c1bf](https://github.com/troch/path-parser/commit/969c1bf))
+* add search-params as a dependency ([6ab04d7](https://github.com/troch/path-parser/commit/6ab04d7))
+
+
+### BREAKING CHANGES
+
+* `.match()` renamed to `.test()` and now takes an options object as a second parameter
+* `.partialMatch()` renamed to `.partialTest()` and now takes an options object as a second parameter. Option `delimited` is by default true, meaning a partial will be successful if the partially matched path is consumed up to a delimiter (`?`, `/`, `.`, `;`)
+
+
 <a name="1.0.4"></a>
 ## [1.0.4](https://github.com/troch/path-parser/compare/v1.0.3...v1.0.4) (2016-06-30)
 

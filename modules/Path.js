@@ -92,7 +92,10 @@ const optTrailingSlash = (source, trailingSlash) => {
 
 const upToDelimiter = (source, delimiter) => {
     if (!delimiter) return source;
-    return source.replace(/\\(\/|\?|\.|;)$/, '') + '(\\/|\\?|\\.|;|$)';
+
+    return /(\/)$/.test(source)
+        ? source
+        : source + '(\\/|\\?|\\.|;|$)';
 };
 
 const appendQueryParam = (params, param, val = '') => {

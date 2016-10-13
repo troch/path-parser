@@ -166,6 +166,7 @@ describe('Path', function () {
 
         path = new Path('/');
         should.not.exist(path.test(''));
+        should.not.exist(path.partialTest(''));
         path.test('/', { trailingSlash: true }).should.eql({});
         path.test('', { trailingSlash: 1 }).should.eql({});
     });

@@ -323,7 +323,9 @@ var optTrailingSlash = function optTrailingSlash(source, trailingSlash) {
 
 var upToDelimiter = function upToDelimiter(source, delimiter) {
     if (!delimiter) return source;
-    return source.replace(/\\(\/|\?|\.|;)$/, '') + '(\\/|\\?|\\.|;|$)';
+
+    return (/(\/)$/.test(source) ? source : source + '(\\/|\\?|\\.|;|$)'
+    );
 };
 
 var appendQueryParam = function appendQueryParam(params, param) {

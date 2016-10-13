@@ -1,3 +1,13 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/troch/path-parser/compare/v2.0.0...v2.0.1) (2016-10-13)
+
+
+### Bug Fixes
+
+* don't partially match '' against '/' ([eeb378e](https://github.com/troch/path-parser/commit/eeb378e))
+
+
+
 <a name="2.0.0"></a>
 # [2.0.0](https://github.com/troch/path-parser/compare/v1.0.4...v2.0.0) (2016-10-12)
 

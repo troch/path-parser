@@ -1,7 +1,7 @@
 import { getSearch, withoutBrackets, parse, toObject } from 'search-params';
 
 const defaultOrConstrained = (match) =>
-    '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%]+') + ')';
+    '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%\':]+') + ')';
 
 const rules = [
     {

@@ -190,4 +190,11 @@ describe('Path', function () {
         path.partialTest('/university', { delimited: false }).should.eql({});
         path.partialTest('/univers/hello').should.eql({});
     });
+
+    it('should match with special characters in path', function () {
+        var path = new Path('/test/:name/test2');
+
+        path.partialTest('/test/he:re/test2').should.eql({ name: 'he:re' });
+        path.partialTest('/test/he\'re/test2').should.eql({ name: 'he\'re' });
+    });
 });

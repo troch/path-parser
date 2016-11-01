@@ -1,3 +1,14 @@
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/troch/path-parser/compare/v2.0.1...v2.0.2) (2016-11-01)
+
+
+### Bug Fixes
+
+* add possibility to use ' and : characters in path. ([2f445e7](https://github.com/troch/path-parser/commit/2f445e7))
+* use properly encodeURI and encodeURIComponent ([1270364](https://github.com/troch/path-parser/commit/1270364))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/troch/path-parser/compare/v2.0.0...v2.0.1) (2016-10-13)
 

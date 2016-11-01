@@ -225,7 +225,7 @@ var set = function set(object, property, value, receiver) {
 };
 
 var defaultOrConstrained = function defaultOrConstrained(match) {
-    return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%]+') + ')';
+    return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%\':]+') + ')';
 };
 
 var rules = [{
@@ -426,9 +426,9 @@ var Path = function () {
             });
         }
     }, {
-        key: '_isSpatParam',
-        value: function _isSpatParam(name) {
-            return this.spatParams.indexOf(name) !== -1;
+        key: '_isQueryParam',
+        value: function _isQueryParam(name) {
+            return this.queryParams.indexOf(name) !== -1 || this.queryParamsBr.indexOf(name) !== -1;
         }
     }, {
         key: '_urlTest',
@@ -512,7 +512,7 @@ var Path = function () {
                 }
 
                 var val = params[key];
-                var encode = _this4._isSpatParam(key) ? encodeURI : encodeURIComponent;
+                var encode = _this4._isQueryParam(key) ? encodeURIComponent : encodeURI;
 
                 if (typeof val === 'boolean') {
                     acc[key] = val;

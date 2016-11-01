@@ -196,5 +196,8 @@ describe('Path', function () {
 
         path.partialTest('/test/he:re/test2').should.eql({ name: 'he:re' });
         path.partialTest('/test/he\'re/test2').should.eql({ name: 'he\'re' });
+
+        path.build({ name: 'he:re' }).should.eql('/test/he:re/test2');
+        path.build({ name: 'he\'re' }).should.eql('/test/he\'re/test2');
     });
 });

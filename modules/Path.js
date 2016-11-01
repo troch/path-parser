@@ -174,8 +174,9 @@ export default class Path {
             .map(t => t.val[0]);
     }
 
-    _isSpatParam(name) {
-        return this.spatParams.indexOf(name) !== -1;
+    _isQueryParam(name) {
+        return this.queryParams.indexOf(name) !== -1 ||
+            this.queryParamsBr.indexOf(name) !== -1;
     }
 
     _urlTest(path, regex) {
@@ -243,7 +244,7 @@ export default class Path {
                 }
 
                 const val = params[key];
-                const encode = this._isSpatParam(key) ? encodeURI : encodeURIComponent;
+                const encode = this._isQueryParam(key) ? encodeURIComponent : encodeURI;
 
                 if (typeof val === 'boolean') {
                     acc[key] = val;

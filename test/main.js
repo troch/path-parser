@@ -43,7 +43,7 @@ describe('Path', function () {
         path.build({ id: '123', id2: 'abc' }).should.equal('/users/profile/123-abc.html');
         (function () {
             path.build({ id: '123'});
-        }).should.throw('Missing parameters');
+        }).should.throw('Cannot build path: \'/users/profile/:id-:id2.html\' requires missing parameters { id2 }');
     });
 
     it('should match and build paths with query parameters', function () {

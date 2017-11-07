@@ -260,7 +260,10 @@ export default class Path {
         );
 
         // Check all params are provided (not search parameters which are optional)
-        if (this.urlParams.some(p => !exists(encodedParams[p]))) throw new Error('Missing parameters');
+        if (this.urlParams.some(p => !exists(encodedParams[p]))) {
+            const missingParameters = this.urlParams.filter(p => !exists(encodedParams[p]));
+            throw new Error('Cannot build path: \'' + this.path + '\' requires missing parameters { ' + missingParameters.join(', ') + ' }');
+        }
 
         // Check constraints
         if (!options.ignoreConstraints) {

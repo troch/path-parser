@@ -1,3 +1,14 @@
+<a name="2.1.0"></a>
+# [2.1.0](https://github.com/troch/path-parser/compare/v2.0.2...v2.1.0) (2017-11-08)
+
+
+### Features
+
+* improve other error messages ([bf5bea5](https://github.com/troch/path-parser/commit/bf5bea5))
+* provide more details in "Missing parameters" error [router5/router5[#208](https://github.com/troch/path-parser/issues/208)] ([b562e5c](https://github.com/troch/path-parser/commit/b562e5c))
+
+
+
 <a name="2.0.2"></a>
 ## [2.0.2](https://github.com/troch/path-parser/compare/v2.0.1...v2.0.2) (2016-11-01)
 

@@ -1,6 +1,6 @@
 {
   "name": "path-parser",
-  "version": "2.0.2",
+  "version": "2.1.0",
   "description": "A small utility to parse, match and generate paths",
   "main": "dist/commonjs/path-parser.js",
   "jsnext:main": "modules/Path.js",
@@ -13,7 +13,7 @@
     "build:cjs": "mkdirp dist/commonjs && babel modules/Path.js -o dist/commonjs/path-parser.js",
     "clean": "rimraf dist",
     "build": "npm run clean && npm run build:amd && npm run build:umd && npm run build:cjs",
-    "clog": "conventional-changelog -p angular -i CHANGELOG.md -w"
+    "clog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
     "type": "git",

@@ -79,7 +79,7 @@ const tokenise = (str, tokens = []) => {
 
     // If no rules matched, throw an error (possible malformed path)
     if (!matched) {
-        throw new Error('Could not parse path.');
+        throw new Error(`Could not parse path '${str}'`);
     }
     // Return tokens
     return tokens;
@@ -140,7 +140,7 @@ export default class Path {
     }
 
     constructor(path) {
-        if (!path) throw new Error('Please supply a path');
+        if (!path) throw new Error('Missing path in Path constructor');
         this.path   = path;
         this.tokens = tokenise(path);
 
@@ -271,7 +271,7 @@ export default class Path {
                 .filter(t => /^url-parameter/.test(t.type) && !/-splat$/.test(t.type))
                 .every(t => new RegExp('^' + defaultOrConstrained(t.otherVal[0]) + '$').test(encodedParams[t.val]));
 
-            if (!constraintsPassed) throw new Error('Some parameters are of invalid format');
+            if (!constraintsPassed) throw new Error(`Some parameters of '${this.path}' are of invalid format`);
         }
 
         let base = this.tokens

@@ -1,3 +1,18 @@
+<a name="3.0.1"></a>
+## [3.0.1](https://github.com/troch/path-parser/compare/v3.0.0...v3.0.1) (2017-11-16)
+
+
+
+<a name="3.0.0"></a>
+# [3.0.0](https://github.com/troch/path-parser/compare/v2.1.0...v3.0.0) (2017-11-16)
+
+
+### BREAKING CHANGES
+
+* amd and umd builds are no longer provided
+
+
+
 <a name="2.1.0"></a>
 # [2.1.0](https://github.com/troch/path-parser/compare/v2.0.2...v2.1.0) (2017-11-08)
 

@@ -1,6 +1,7 @@
 language: node_js
+cache: yarn
 node_js:
-  - '4.0'
+  - '8'
 before_install:
   - npm install -g babel-cli
 script:

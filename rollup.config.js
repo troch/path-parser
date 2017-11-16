@@ -1,8 +1,7 @@
 import babel from 'rollup-plugin-babel';
-import { argv } from 'yargs';
 
 const babelOptions = {
-    presets: [ 'es2015-rollup' ],
+    presets: [['env', {modules: false}]],
     plugins: [
         'transform-object-rest-spread',
         'transform-class-properties',
@@ -11,17 +10,11 @@ const babelOptions = {
     babelrc: false
 };
 
-const format = argv.format || 'amd';
-const dest = {
-    amd:  'dist/amd/path-parser.js',
-    umd:  'dist/umd/path-parser.js'
-}[format];
-
-export default {
+export default ['es', 'cjs'].map(format => ({
     entry: 'modules/Path.js',
     format,
     plugins: [ babel(babelOptions) ],
     moduleName: 'Path',
     moduleId: 'Path',
-    dest
-};
+    dest: `dist/${format}/path-parser.js`
+}));

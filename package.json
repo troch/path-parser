@@ -1,18 +1,15 @@
 {
   "name": "path-parser",
-  "version": "2.1.0",
+  "version": "3.0.0",
   "description": "A small utility to parse, match and generate paths",
-  "main": "dist/commonjs/path-parser.js",
-  "jsnext:main": "modules/Path.js",
+  "main": "dist/cjs/path-parser.js",
+  "jsnext:main": "dist/es/path-parser.js",
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
     "test-cover": "babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
     "lint": "eslint modules/*.js",
-    "build:amd": "BABEL_ENV=rollup rollup -c rollup.config.js --format amd",
-    "build:umd": "BABEL_ENV=rollup rollup -c rollup.config.js --format umd",
-    "build:cjs": "mkdirp dist/commonjs && babel modules/Path.js -o dist/commonjs/path-parser.js",
+    "build": "npm run clean && rollup -c rollup.config.js",
     "clean": "rimraf dist",
-    "build": "npm run clean && npm run build:amd && npm run build:umd && npm run build:cjs",
     "clog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "repository": {
@@ -42,18 +39,16 @@
     "babel-plugin-transform-export-extensions": "~6.22.0",
     "babel-plugin-transform-object-rest-spread": "~6.26.0",
     "babel-preset-env": "~1.6.1",
-    "babel-preset-es2015-rollup": "~3.0.0",
-    "conventional-changelog": "~1.1.6",
+    "conventional-changelog": "~1.1.7",
     "coveralls": "~3.0.0",
-    "eslint": "~4.10.0",
+    "eslint": "~4.11.0",
     "isparta": "~4.0.0",
     "mkdirp": "~0.5.1",
     "mocha": "~4.0.1",
     "rimraf": "~2.6.2",
-    "rollup": "~0.51.0",
+    "rollup": "~0.51.5",
     "rollup-plugin-babel": "~3.0.2",
-    "should": "~13.1.3",
-    "yargs": "~10.0.3"
+    "should": "~13.1.3"
   },
   "dependencies": {
     "search-params": "~1.3.0"

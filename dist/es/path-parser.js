@@ -1,52 +1,10 @@
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('search-params')) :
-	typeof define === 'function' && define.amd ? define(['search-params'], factory) :
-	(global.Path = factory(global.searchParams));
-}(this, (function (searchParams) { 'use strict';
+import { getSearch, parse, toObject, withoutBrackets } from 'search-params';
 
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var defaultOrConstrained = function defaultOrConstrained(match) {
     return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%\':]+') + ')';
@@ -154,7 +112,7 @@ var appendQueryParam = function appendQueryParam(params, param) {
     var val = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
 
     if (/\[\]$/.test(param)) {
-        param = searchParams.withoutBrackets(param);
+        param = withoutBrackets(param);
         val = [val];
     }
     var existingVal = params[param];
@@ -165,10 +123,10 @@ var appendQueryParam = function appendQueryParam(params, param) {
 };
 
 var parseQueryParams = function parseQueryParams(path) {
-    var searchPart = searchParams.getSearch(path);
+    var searchPart = getSearch(path);
     if (!searchPart) return {};
 
-    return searchParams.toObject(searchParams.parse(searchPart));
+    return toObject(parse(searchPart));
 };
 
 function _serialise(key, val) {
@@ -186,7 +144,7 @@ function _serialise(key, val) {
 }
 
 var Path = function () {
-    createClass(Path, null, [{
+    _createClass(Path, null, [{
         key: 'createPath',
         value: function createPath(path) {
             return new Path(path);
@@ -199,7 +157,7 @@ var Path = function () {
     }]);
 
     function Path(path) {
-        classCallCheck(this, Path);
+        _classCallCheck(this, Path);
 
         if (!path) throw new Error('Missing path in Path constructor');
         this.path = path;
@@ -238,7 +196,7 @@ var Path = function () {
         }).join('');
     }
 
-    createClass(Path, [{
+    _createClass(Path, [{
         key: '_getParams',
         value: function _getParams(type) {
             var predicate = type instanceof RegExp ? function (t) {
@@ -389,17 +347,16 @@ var Path = function () {
             }));
 
             var searchPart = queryParams.filter(function (p) {
-                return Object.keys(encodedParams).indexOf(searchParams.withoutBrackets(p)) !== -1;
+                return Object.keys(encodedParams).indexOf(withoutBrackets(p)) !== -1;
             }).map(function (p) {
-                return _serialise(p, encodedParams[searchParams.withoutBrackets(p)]);
+                return _serialise(p, encodedParams[withoutBrackets(p)]);
             }).join('&');
 
             return base + (searchPart ? '?' + searchPart : '');
         }
     }]);
+
     return Path;
 }();
 
-return Path;
-
-})));
+export default Path;

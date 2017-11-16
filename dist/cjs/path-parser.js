@@ -1,48 +1,12 @@
-define(['search-params'], function (searchParams) { 'use strict';
+'use strict';
 
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
+var searchParams = require('search-params');
 
-var createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-
-
-
-
-
-
-var _extends = Object.assign || function (target) {
-  for (var i = 1; i < arguments.length; i++) {
-    var source = arguments[i];
-
-    for (var key in source) {
-      if (Object.prototype.hasOwnProperty.call(source, key)) {
-        target[key] = source[key];
-      }
-    }
-  }
-
-  return target;
-};
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var defaultOrConstrained = function defaultOrConstrained(match) {
     return '(' + (match ? match.replace(/(^<|>$)/g, '') : '[a-zA-Z0-9-_.~%\':]+') + ')';
@@ -182,7 +146,7 @@ function _serialise(key, val) {
 }
 
 var Path = function () {
-    createClass(Path, null, [{
+    _createClass(Path, null, [{
         key: 'createPath',
         value: function createPath(path) {
             return new Path(path);
@@ -195,7 +159,7 @@ var Path = function () {
     }]);
 
     function Path(path) {
-        classCallCheck(this, Path);
+        _classCallCheck(this, Path);
 
         if (!path) throw new Error('Missing path in Path constructor');
         this.path = path;
@@ -234,7 +198,7 @@ var Path = function () {
         }).join('');
     }
 
-    createClass(Path, [{
+    _createClass(Path, [{
         key: '_getParams',
         value: function _getParams(type) {
             var predicate = type instanceof RegExp ? function (t) {
@@ -393,9 +357,8 @@ var Path = function () {
             return base + (searchPart ? '?' + searchPart : '');
         }
     }]);
+
     return Path;
 }();
 
-return Path;
-
-});
+module.exports = Path;

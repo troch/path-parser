@@ -47,8 +47,8 @@
     "mkdirp": "~0.5.1",
     "mocha": "~4.0.1",
     "rimraf": "~2.6.2",
-    "rollup": "~0.51.5",
-    "rollup-plugin-babel": "~3.0.2",
+    "rollup": "~0.53.3",
+    "rollup-plugin-babel": "~3.0.3",
     "should": "~13.1.3"
   },
   "dependencies": {

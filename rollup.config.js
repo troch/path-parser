@@ -11,10 +11,12 @@ const babelOptions = {
 };
 
 export default ['es', 'cjs'].map(format => ({
-    entry: 'modules/Path.js',
-    format,
+    input: 'modules/Path.js',
     plugins: [ babel(babelOptions) ],
-    moduleName: 'Path',
-    moduleId: 'Path',
-    dest: `dist/${format}/path-parser.js`
+    output: {
+        name: 'Path',
+        format,
+        file:`dist/${format}/path-parser.js`
+    },
+    moduleId: 'Path'
 }));

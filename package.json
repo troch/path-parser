@@ -5,6 +5,7 @@
     "main": "dist/cjs/path-parser.js",
     "jsnext:main": "dist/es/path-parser.js",
     "module": "dist/es/path-parser.js",
+    "side-effects": false,
     "scripts": {
         "test": "mocha --compilers js:babel-core/register",
         "test-cover":

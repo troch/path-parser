@@ -16,7 +16,6 @@ export default ['es', 'cjs'].map(format => ({
     output: {
         name: 'Path',
         format,
-        file:`dist/${format}/path-parser.js`
-    },
-    moduleId: 'Path'
+        file: `dist/${format}/path-parser.js`
+    }
 }));

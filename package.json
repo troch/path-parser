@@ -34,22 +34,22 @@
   "homepage": "https://github.com/troch/path-parser",
   "devDependencies": {
     "babel-core": "~6.26.0",
-    "babel-eslint": "~8.2.1",
+    "babel-eslint": "~8.2.2",
     "babel-plugin-add-module-exports": "~0.2.1",
     "babel-plugin-transform-class-properties": "~6.24.1",
     "babel-plugin-transform-export-extensions": "~6.22.0",
     "babel-plugin-transform-object-rest-spread": "~6.26.0",
     "babel-preset-env": "~1.6.1",
-    "conventional-changelog": "~1.1.7",
+    "conventional-changelog": "~1.1.18",
     "coveralls": "~3.0.0",
-    "eslint": "~4.15.0",
+    "eslint": "~4.19.0",
     "isparta": "~4.0.0",
     "mkdirp": "~0.5.1",
-    "mocha": "~4.1.0",
+    "mocha": "~5.0.4",
     "rimraf": "~2.6.2",
-    "rollup": "~0.53.3",
+    "rollup": "~0.57.1",
     "rollup-plugin-babel": "~3.0.3",
-    "should": "~13.2.0"
+    "should": "~13.2.1"
   },
   "dependencies": {
     "search-params": "~1.3.0"

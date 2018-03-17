@@ -1,4 +1,4 @@
-import { getSearch, parse, toObject, withoutBrackets } from 'search-params';
+import { getSearch, withoutBrackets, parse, toObject } from 'search-params';
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -216,9 +216,14 @@ var Path = function () {
         }
     }, {
         key: '_urlTest',
-        value: function _urlTest(path, regex) {
+        value: function _urlTest(path, source) {
             var _this = this;
 
+            var _ref = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {},
+                _ref$caseSensitive = _ref.caseSensitive,
+                caseSensitive = _ref$caseSensitive === undefined ? false : _ref$caseSensitive;
+
+            var regex = new RegExp('^' + source, caseSensitive ? '' : 'i');
             var match = path.match(regex);
             if (!match) return null;else if (!this.urlParams.length) return {};
             // Reduce named params to key-value pairs
@@ -236,7 +241,7 @@ var Path = function () {
             // trailingSlash: falsy => non optional, truthy => optional
             var source = optTrailingSlash(this.source, options.trailingSlash);
             // Check if exact match
-            var matched = this._urlTest(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
+            var matched = this._urlTest(path, source + (this.hasQueryParams ? '(\\?.*$|$)' : '$'), opts);
             // If no match, or no query params, no need to go further
             if (!matched || !this.hasQueryParams) return matched;
             // Extract query params
@@ -265,7 +270,7 @@ var Path = function () {
             // Check if partial match (start of given path matches regex)
             // trailingSlash: falsy => non optional, truthy => optional
             var source = upToDelimiter(this.source, options.delimited);
-            var match = this._urlTest(path, new RegExp('^' + source));
+            var match = this._urlTest(path, source, opts);
 
             if (!match) return match;
 

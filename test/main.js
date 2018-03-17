@@ -213,19 +213,19 @@ describe('Path', function() {
     it('should match paths with optional trailing slashes', function() {
         let path = new Path('/my-path')
         should.not.exist(path.test('/my-path/'))
-        path.test('/my-path/', { trailingSlash: true }).should.eql({})
-        path.test('/my-path/', { trailingSlash: 1 }).should.eql({})
+        path.test('/my-path/', { strictTrailingSlash: true }).should.eql({})
+        path.test('/my-path/', { strictTrailingSlash: 1 }).should.eql({})
 
         path = new Path('/my-path/')
         should.not.exist(path.test('/my-path'))
-        path.test('/my-path', { trailingSlash: true }).should.eql({})
-        path.test('/my-path', { trailingSlash: 1 }).should.eql({})
+        path.test('/my-path', { strictTrailingSlash: true }).should.eql({})
+        path.test('/my-path', { strictTrailingSlash: 1 }).should.eql({})
 
         path = new Path('/')
         should.not.exist(path.test(''))
         should.not.exist(path.partialTest(''))
-        path.test('/', { trailingSlash: true }).should.eql({})
-        path.test('', { trailingSlash: 1 }).should.eql({})
+        path.test('/', { strictTrailingSlash: true }).should.eql({})
+        path.test('', { strictTrailingSlash: 1 }).should.eql({})
     })
 
     it('should match paths with encoded values', function() {

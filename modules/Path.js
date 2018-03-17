@@ -87,8 +87,8 @@ const tokenise = (str, tokens = []) => {
     return tokens
 }
 
-const optTrailingSlash = (source, trailingSlash) => {
-    if (!trailingSlash) return source
+const optTrailingSlash = (source, strictTrailingSlash) => {
+    if (!strictTrailingSlash) return source
     return source.replace(/\\\/$/, '') + '(?:\\/)?'
 }
 
@@ -204,9 +204,12 @@ export default class Path {
     }
 
     test(path, opts) {
-        const options = { trailingSlash: false, ...opts }
+        const options = { strictTrailingSlash: false, ...opts }
         // trailingSlash: falsy => non optional, truthy => optional
-        const source = optTrailingSlash(this.source, options.trailingSlash)
+        const source = optTrailingSlash(
+            this.source,
+            options.strictTrailingSlash
+        )
         // Check if exact match
         const matched = this._urlTest(
             path,

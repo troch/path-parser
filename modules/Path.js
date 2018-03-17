@@ -179,8 +179,9 @@ export default class Path {
             this.queryParamsBr.indexOf(name) !== -1;
     }
 
-    _urlTest(path, regex) {
-        let match = path.match(regex);
+    _urlTest(path, source, { caseSensitive = false } = {}) {
+        const regex = new RegExp('^' + source, caseSensitive ? '' : 'i');
+        const match = path.match(regex);
         if (!match) return null;
         else if (!this.urlParams.length) return {};
         // Reduce named params to key-value pairs
@@ -196,7 +197,7 @@ export default class Path {
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(this.source, options.trailingSlash);
         // Check if exact match
-        const matched = this._urlTest(path, new RegExp('^' + source + (this.hasQueryParams ? '(\\?.*$|$)' : '$')));
+        const matched = this._urlTest(path, source + (this.hasQueryParams ? '(\\?.*$|$)' : '$'), opts);
         // If no match, or no query params, no need to go further
         if (!matched || !this.hasQueryParams) return matched;
         // Extract query params
@@ -220,7 +221,7 @@ export default class Path {
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
         let source = upToDelimiter(this.source, options.delimited);
-        let match = this._urlTest(path, new RegExp('^' + source));
+        let match = this._urlTest(path, source, opts);
 
         if (!match) return match;
 

@@ -200,4 +200,12 @@ describe('Path', function () {
         path.build({ name: 'he:re' }).should.eql('/test/he:re/test2');
         path.build({ name: 'he\'re' }).should.eql('/test/he\'re/test2');
     });
+
+    it('should be case insensitive', () => {
+        var path = new Path('/test');
+
+        path.test('/test').should.eql({})
+        path.test('/Test').should.eql({})
+        should.not.exist(path.test('/TEST', { caseSensitive: true }))
+    });
 });

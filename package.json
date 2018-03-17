@@ -1,57 +1,65 @@
 {
-  "name": "path-parser",
-  "version": "3.0.1",
-  "description": "A small utility to parse, match and generate paths",
-  "main": "dist/cjs/path-parser.js",
-  "jsnext:main": "dist/es/path-parser.js",
-  "module": "dist/es/path-parser.js",
-  "scripts": {
-    "test": "mocha --require babel-core/register",
-    "test-cover": "babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
-    "lint": "eslint modules/*.js",
-    "build": "npm run clean && rollup -c rollup.config.js",
-    "clean": "rimraf dist",
-    "clog": "conventional-changelog -p angular -i CHANGELOG.md -s"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/troch/path-parser.git"
-  },
-  "keywords": [
-    "path",
-    "parser",
-    "url",
-    "route",
-    "match",
-    "partial match",
-    "regex"
-  ],
-  "author": "Thomas Roch",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/troch/path-parser/issues"
-  },
-  "homepage": "https://github.com/troch/path-parser",
-  "devDependencies": {
-    "babel-core": "~6.26.0",
-    "babel-eslint": "~8.2.2",
-    "babel-plugin-add-module-exports": "~0.2.1",
-    "babel-plugin-transform-class-properties": "~6.24.1",
-    "babel-plugin-transform-export-extensions": "~6.22.0",
-    "babel-plugin-transform-object-rest-spread": "~6.26.0",
-    "babel-preset-env": "~1.6.1",
-    "conventional-changelog": "~1.1.18",
-    "coveralls": "~3.0.0",
-    "eslint": "~4.19.0",
-    "isparta": "~4.0.0",
-    "mkdirp": "~0.5.1",
-    "mocha": "~5.0.4",
-    "rimraf": "~2.6.2",
-    "rollup": "~0.57.1",
-    "rollup-plugin-babel": "~3.0.3",
-    "should": "~13.2.1"
-  },
-  "dependencies": {
-    "search-params": "~1.3.0"
-  }
+    "name": "path-parser",
+    "version": "3.0.1",
+    "description": "A small utility to parse, match and generate paths",
+    "main": "dist/cjs/path-parser.js",
+    "jsnext:main": "dist/es/path-parser.js",
+    "module": "dist/es/path-parser.js",
+    "scripts": {
+        "test": "mocha --compilers js:babel-core/register",
+        "test-cover":
+            "babel-node node_modules/.bin/isparta cover node_modules/.bin/_mocha",
+        "lint": "eslint modules/*.js",
+        "build": "npm run clean && rollup -c rollup.config.js",
+        "clean": "rimraf dist",
+        "clog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+        "precommit": "lint-staged"
+    },
+    "lint-staged": {
+        "*.{js,json,md}": ["prettier --write", "git add"]
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/troch/path-parser.git"
+    },
+    "keywords": [
+        "path",
+        "parser",
+        "url",
+        "route",
+        "match",
+        "partial match",
+        "regex"
+    ],
+    "author": "Thomas Roch",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/troch/path-parser/issues"
+    },
+    "homepage": "https://github.com/troch/path-parser",
+    "devDependencies": {
+        "babel-core": "~6.26.0",
+        "babel-eslint": "~8.2.2",
+        "babel-plugin-add-module-exports": "~0.2.1",
+        "babel-plugin-transform-class-properties": "~6.24.1",
+        "babel-plugin-transform-export-extensions": "~6.22.0",
+        "babel-plugin-transform-object-rest-spread": "~6.26.0",
+        "babel-preset-env": "~1.6.1",
+        "conventional-changelog": "~1.1.18",
+        "coveralls": "~3.0.0",
+        "eslint": "~4.19.0",
+        "eslint-config-prettier": "~2.9.0",
+        "husky": "~0.14.3",
+        "isparta": "~4.0.0",
+        "lint-staged": "~7.0.0",
+        "mkdirp": "~0.5.1",
+        "mocha": "~5.0.4",
+        "rimraf": "~2.6.2",
+        "rollup": "~0.57.1",
+        "rollup-plugin-babel": "~3.0.3",
+        "should": "~13.2.1"
+    },
+    "dependencies": {
+        "search-params": "~1.3.0"
+    }
 }

@@ -201,7 +201,6 @@ var Path = /** @class */ (function () {
     Path.prototype.build = function (params, opts) {
         var _this = this;
         if (params === void 0) { params = {}; }
-        if (opts === void 0) { opts = {}; }
         var options = __assign({ ignoreConstraints: false, ignoreSearch: false, queryParams: {} }, opts);
         var encodedUrlParams = Object.keys(params)
             .filter(function (p) { return !_this.isQueryParam(p); })

@@ -48,6 +48,7 @@ export interface IPartialTestOptions {
 
 export interface ITestOptions {
     caseSensitive?: boolean
+    strictTrailingSlash?: boolean
     queryParams?: IOptions
 }
 
@@ -110,7 +111,7 @@ export default class Path {
         return this.queryParams.indexOf(name) !== -1
     }
 
-    public test(path, opts): TestMatch {
+    public test(path: string, opts?: ITestOptions): TestMatch {
         const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(
@@ -143,7 +144,7 @@ export default class Path {
         return null
     }
 
-    public partialTest(path: string, opts: IPartialTestOptions): TestMatch {
+    public partialTest(path: string, opts?: IPartialTestOptions): TestMatch {
         const options = { delimited: true, queryParams: {}, ...opts }
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
@@ -167,7 +168,7 @@ export default class Path {
         return match
     }
 
-    public build(params: object = {}, opts: IBuildOptions = {}): string {
+    public build(params: object = {}, opts?: IBuildOptions): string {
         const options = {
             ignoreConstraints: false,
             ignoreSearch: false,

@@ -1,3 +1,21 @@
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/troch/path-parser/compare/v3.0.1...v4.0.0) (2018-03-25)
+
+
+### Features
+
+* make matching case insensitive, add support for 'caseSentive' option ([063aca6](https://github.com/troch/path-parser/commit/063aca6))
+
+
+### BREAKING CHANGES
+
+* query parameters can no longer be defined with brackets, instead options are available when matching and building to describe how arrays, booleans and null values are formatted (see 'queryParams' options in README).
+* Boolean and null values in query parameters are stringified differently, see the list of options available. To keep behaviour unchanged, set `nullFormat` to `'hidden'` and `booleanFormat` to `'empty-true'`.
+* 'trailingSlash' option has been renamed to 'strictTrailingSlash'
+* 'test' and 'partialTest' are now case insensitive by default, use 'caseSensitive' option to make it case sensitive
+
+
+
 <a name="3.0.1"></a>
 ## [3.0.1](https://github.com/troch/path-parser/compare/v3.0.0...v3.0.1) (2017-11-16)
 

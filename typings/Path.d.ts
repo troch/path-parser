@@ -7,6 +7,7 @@ export interface IPartialTestOptions {
 }
 export interface ITestOptions {
     caseSensitive?: boolean;
+    strictTrailingSlash?: boolean;
     queryParams?: IOptions;
 }
 export interface IBuildOptions {
@@ -30,8 +31,8 @@ export default class Path {
     source: string;
     constructor(path: any);
     isQueryParam(name: string): boolean;
-    test(path: any, opts: any): TestMatch;
-    partialTest(path: string, opts: IPartialTestOptions): TestMatch;
+    test(path: string, opts?: ITestOptions): TestMatch;
+    partialTest(path: string, opts?: IPartialTestOptions): TestMatch;
     build(params?: object, opts?: IBuildOptions): string;
     private getParams(type);
     private urlTest(path, source, {caseSensitive}?);

@@ -1,104 +1,101 @@
 [![npm version](https://badge.fury.io/js/path-parser.svg)](http://badge.fury.io/js/path-parser)
 [![Build Status](https://travis-ci.org/troch/path-parser.svg)](https://travis-ci.org/troch/path-parser)
-[![Coverage Status](https://coveralls.io/repos/troch/path-parser/badge.svg?branch=master)](https://coveralls.io/r/troch/path-parser?branch=master)
 
 # path-parser
 
-A small utility to parse and build paths. It can be used to partially or fully
+A small library to parse and build paths. It can be used to partially or fully
 test paths against a defined pattern.
 
 Partial testing allows to determine if a given path starts with the defined pattern.
 It is used by [route-node](https://github.com/troch/route-node)
 
-## Usage
 
 ```javascript
-import Path from 'path-parser';
-// Defining a new path
-const p = new Path('/users/profile/:id');
+import Path from 'path-parser'
+
+const path = new Path('/users/:id')
+
 // Matching
-p.test('/users/profile/00123')               // => {id: "00123"}
-// Partial testing: does this path
-// starts with that pattern?
-p.partialTest('/users/profile/00123/orders') // => {id: "00123"}
-p.partialTest('/profile/00123/orders')       // => null
+path.test('/users/00123')
+// {
+//  id: "00123"
+// }
+
+// Partial testing: does the provided path
+// starts with the defined pattern?
+path.partialTest('/users/00123/orders')
+// {
+//  id: "00123"
+// }
+path.partialTest('/profile/00123/orders')
+// null
+
 // Building
-p.build({id: '00123'})                       // => "users/profile/00123"
+path.build({ id: '00123' })
+// => "/users/00123"
 ```
 
 Without `new`:
 
 ```javascript
-import Path from 'path-parser';
-
-const p = Path.createPath('/users/profile/:id');
+const path = Path.createPath('/users/:id')
 ```
 
 ## Defining parameters
 
-- `:param`: for URL parameters
-- `;param`: for matrix parameters
-- `*splat`: for parameters spanning over multiple segments. Handle with care
-- `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional.
-- `?param1=a&param1=b` will result in `{param1: ['a', 'b']}`
+*   `:param`: for URL parameters
+*   `;param`: for matrix parameters
+*   `*splat`: for parameters spanning over multiple segments. Handle with care
+*   `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional.
 
-### Parameter constraints
+#### Parameter constraints
 
 For URL parameters and matrix parameters, you can add a constraint in the form of a regular expression.
 Note that back slashes have to be escaped.
 
-- `:param<\\d+>` will match numbers only for parameter `param`
-- `;id<[a-fA-F0-9]{8}` will match 8 characters hexadecimal strings for parameter `id`
+*   `:param<\\d+>` will match numbers only for parameter `param`
+*   `;id<[a-fA-F0-9]{8}` will match 8 characters hexadecimal strings for parameter `id`
 
 Constraints are also applied when building paths, unless specified otherwise (set option flag `ignoreConstraints` to true).
 
 ```javascript
 // Path.build(params, opts)
-var Path = new Path('/users/profile/:id<\d+>');
+var Path = new Path('/users/:id<d+>')
 
-path.build({id: 'not-a-number'});       // => Will throw an error
-path.build({id: 'not-a-number'}, {ignoreConstraints: true}); // => '/users/profile/not-a-number'
+path.build({ id: 'not-a-number' }) // => Will throw an error
+path.build({ id: '123' }) // => '/users/123'
 ```
 
-## Optional trailing slashes
+## API
 
-`.test(path, options)` accepts an option object:
-- `strictTrailingSlash`: whether or not trailing slashes are optional (default to `false`).
 
-```javascript
-var path = new Path('/my-path');
+### path.test(path: string, opts?: object): object | null;
 
-path.test('/my-path/') // => {}
-path.test('/my-path/', { strictTrailingSlash: true }) // => null
-```
+Test if the provided path matches the defined path template. Options available are:
+- `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
+- `'strictTrailingSlash'`: whether or not it should strictly match trailing slashes (default to `false`)
+- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
-## Partial test with delimiters
 
-`.partialTest(path, options)` accepts an option object:
-- `delimited`: if truthy, a partial test will only be successful if a delimiter is found at the end of a match (default to `true`, delimiters are `/`, `?`, `.` and `;`).
+### path.partialTest(path: string, opts?: object): object | null;
 
-```javascript
-var path = new Path('/my-path');
+Test if the provided path is partially matched (starts with) the defined path template. Options available are:
+- `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
+- `'delimited'`: whether or not a partial match should only be successful if it reaches a delimiter (`/`, `?`, `.` and `;`). Default to `true`.
+- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
-path.partialTest('/my-path/extended')       // => {}
-path.partialTest('/my-path-extended')       // => null
-path.partialTest('/my-path-extended', { delimited: false }) // => {}
-```
 
-## Query parameters
+### path.build(params?: object, opts?: object): string;
 
-Query parameters are handled by [search-params](https://github.com/rcs/search-params). `test`, `partialTest` and `build` accept [search-params options](https://github.com/troch/search-params#options).
+Builds the defined path template with the provided parameters
+- `'ignoreConstraints'`: whether or not to ignore parameter constraints (default to `false`)
+- `'ignoreSearch'`: whether or not to build query parameters (default to `false`)
+- `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
+- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
-```js
-path.build(params, {
-    queryParams: {
-        arrayFormat: 'index',
-        booleanFormat: 'none'
-    }
-});
-```
+
 
 ## Related modules
 
-- [route-parser](https://github.com/rcs/route-parser)
-- [url-pattern](https://github.com/snd/url-pattern)
+*   [route-parser](https://github.com/rcs/route-parser)
+*   [url-pattern](https://github.com/snd/url-pattern)

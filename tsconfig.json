@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "declaration": true,
+        "declarationDir": "./typings",
+        "outDir": "./temp",
+        "lib": [
+            "es2015"
+        ]
+    },
+    "include": [
+        "./modules/Path.ts"
+    ]
+}

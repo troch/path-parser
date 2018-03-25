@@ -1,18 +1,12 @@
-import babel from 'rollup-plugin-babel'
-
-const babelOptions = {
-    presets: [['env', { modules: false }]],
-    plugins: [
-        'transform-object-rest-spread',
-        'transform-class-properties',
-        'transform-export-extensions'
-    ],
-    babelrc: false
-}
+import typescript from 'rollup-plugin-typescript2'
 
 export default ['es', 'cjs'].map(format => ({
-    input: 'modules/Path.js',
-    plugins: [babel(babelOptions)],
+    input: 'modules/Path.ts',
+    plugins: [
+        typescript({
+            useTsconfigDeclarationDir: true
+        })
+    ],
     output: {
         name: 'Path',
         format,

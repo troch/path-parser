@@ -2,10 +2,7 @@ language: node_js
 cache: yarn
 node_js:
   - '8'
-before_install:
-  - npm install -g babel-cli
 script:
   - npm run lint
   - npm run build
-  - npm run test-cover
-after_script: "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  - npm test

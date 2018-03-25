@@ -1,6 +1,6 @@
 'use strict'
 
-const Path = require('../modules/Path')
+const Path = require('../modules/Path').default
 const should = require('should')
 
 require('mocha')

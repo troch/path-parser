@@ -1,4 +1,6 @@
-import { getSearch, withoutBrackets, parse, toObject } from 'search-params'
+import { parse, build } from 'search-params'
+
+const identity = _ => _
 
 const defaultOrConstrained = match =>
     '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':]+") + ')'
@@ -22,13 +24,6 @@ const rules = [
         pattern: /^;([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(<(.+?)>)?/,
         regex: match =>
             new RegExp(';' + match[1] + '=' + defaultOrConstrained(match[2]))
-    },
-    {
-        // Query parameter: ?param1&param2
-        //                   ?:param1&:param2
-        name: 'query-parameter-bracket',
-        pattern: /^(?:\?|&)(?::)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(?:\[\])/
-        // regex:   match => new RegExp('(?=(\?|.*&)' + match[0] + '(?=(\=|&|$)))')
     },
     {
         // Query parameter: ?param1&param2
@@ -99,10 +94,6 @@ const upToDelimiter = (source, delimiter) => {
 }
 
 const appendQueryParam = (params, param, val = '') => {
-    if (/\[\]$/.test(param)) {
-        param = withoutBrackets(param)
-        val = [val]
-    }
     const existingVal = params[param]
 
     if (existingVal === undefined) params[param] = val
@@ -114,12 +105,7 @@ const appendQueryParam = (params, param, val = '') => {
     return params
 }
 
-const parseQueryParams = path => {
-    let searchPart = getSearch(path)
-    if (!searchPart) return {}
-
-    return toObject(parse(searchPart))
-}
+const parseQueryParams = parse
 
 function serialise(key, val) {
     if (Array.isArray(val)) {
@@ -160,11 +146,8 @@ export default class Path {
         this.urlParams = this._getParams(/^url-parameter/)
         // Query params
         this.queryParams = this._getParams('query-parameter')
-        this.queryParamsBr = this._getParams('query-parameter-bracket')
         // All params
-        this.params = this.urlParams
-            .concat(this.queryParams)
-            .concat(this.queryParamsBr)
+        this.params = this.urlParams.concat(this.queryParams)
         // Check if hasQueryParams
         // Regular expressions for url part only (full and partial match)
         this.source = this.tokens
@@ -183,10 +166,7 @@ export default class Path {
     }
 
     _isQueryParam(name) {
-        return (
-            this.queryParams.indexOf(name) !== -1 ||
-            this.queryParamsBr.indexOf(name) !== -1
-        )
+        return this.queryParams.indexOf(name) !== -1
     }
 
     _urlTest(path, source, { caseSensitive = false } = {}) {
@@ -204,7 +184,7 @@ export default class Path {
     }
 
     test(path, opts) {
-        const options = { strictTrailingSlash: false, ...opts }
+        const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(
             this.source,
@@ -219,9 +199,9 @@ export default class Path {
         // If no match, or no query params, no need to go further
         if (!matched || !this.hasQueryParams) return matched
         // Extract query params
-        let queryParams = parseQueryParams(path)
+        let queryParams = parseQueryParams(path, options.queryParams)
         let unexpectedQueryParams = Object.keys(queryParams).filter(
-            p => this.queryParams.concat(this.queryParamsBr).indexOf(p) === -1
+            p => !this._isQueryParam(p)
         )
 
         if (unexpectedQueryParams.length === 0) {
@@ -235,7 +215,7 @@ export default class Path {
     }
 
     partialTest(path, opts) {
-        const options = { delimited: true, ...opts }
+        const options = { delimited: true, queryParams: {}, ...opts }
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
         let source = upToDelimiter(this.source, options.delimited)
@@ -245,12 +225,10 @@ export default class Path {
 
         if (!this.hasQueryParams) return match
 
-        let queryParams = parseQueryParams(path)
+        let queryParams = parseQueryParams(path, options.queryParams)
 
         Object.keys(queryParams)
-            .filter(
-                p => this.queryParams.concat(this.queryParamsBr).indexOf(p) >= 0
-            )
+            .filter(p => this._isQueryParam(p))
             .forEach(p => appendQueryParam(match, p, queryParams[p]))
 
         return match
@@ -260,33 +238,34 @@ export default class Path {
         const options = {
             ignoreConstraints: false,
             ignoreSearch: false,
+            queryParams: {},
             ...opts
         }
-        const encodedParams = Object.keys(params).reduce((acc, key) => {
-            if (!exists(params[key])) {
+        const encodedUrlParams = Object.keys(params)
+            .filter(p => !this._isQueryParam(p))
+            .reduce((acc, key) => {
+                if (!exists(params[key])) {
+                    return acc
+                }
+
+                const val = params[key]
+                const encode = this._isQueryParam(key) ? identity : encodeURI
+
+                if (typeof val === 'boolean') {
+                    acc[key] = val
+                } else if (Array.isArray(val)) {
+                    acc[key] = val.map(encode)
+                } else {
+                    acc[key] = encode(val)
+                }
+
                 return acc
-            }
-
-            const val = params[key]
-            const encode = this._isQueryParam(key)
-                ? encodeURIComponent
-                : encodeURI
-
-            if (typeof val === 'boolean') {
-                acc[key] = val
-            } else if (Array.isArray(val)) {
-                acc[key] = val.map(encode)
-            } else {
-                acc[key] = encode(val)
-            }
-
-            return acc
-        }, {})
+            }, {})
 
         // Check all params are provided (not search parameters which are optional)
-        if (this.urlParams.some(p => !exists(encodedParams[p]))) {
+        if (this.urlParams.some(p => !exists(params[p]))) {
             const missingParameters = this.urlParams.filter(
-                p => !exists(encodedParams[p])
+                p => !exists(params[p])
             )
             throw new Error(
                 "Cannot build path: '" +
@@ -307,7 +286,7 @@ export default class Path {
                 .every(t =>
                     new RegExp(
                         '^' + defaultOrConstrained(t.otherVal[0]) + '$'
-                    ).test(encodedParams[t.val])
+                    ).test(encodedUrlParams[t.val])
                 )
 
             if (!constraintsPassed)
@@ -320,28 +299,23 @@ export default class Path {
             .filter(t => /^query-parameter/.test(t.type) === false)
             .map(t => {
                 if (t.type === 'url-parameter-matrix')
-                    return `;${t.val}=${encodedParams[t.val[0]]}`
+                    return `;${t.val}=${encodedUrlParams[t.val[0]]}`
                 return /^url-parameter/.test(t.type)
-                    ? encodedParams[t.val[0]]
+                    ? encodedUrlParams[t.val[0]]
                     : t.match
             })
             .join('')
 
         if (options.ignoreSearch) return base
 
-        const queryParams = this.queryParams.concat(
-            this.queryParamsBr.map(p => p + '[]')
-        )
+        const searchParams = this.queryParams
+            .filter(p => Object.keys(params).indexOf(p) !== -1)
+            .reduce((sparams, paramName) => {
+                sparams[paramName] = params[paramName]
+                return sparams
+            }, {})
+        const searchPart = build(searchParams, options.queryParams)
 
-        const searchPart = queryParams
-            .filter(
-                p =>
-                    Object.keys(encodedParams).indexOf(withoutBrackets(p)) !==
-                    -1
-            )
-            .map(p => serialise(p, encodedParams[withoutBrackets(p)]))
-            .join('&')
-
-        return base + (searchPart ? '?' + searchPart : '')
+        return searchPart ? base + '?' + searchPart : base
     }
 }

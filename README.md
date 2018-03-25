@@ -41,9 +41,8 @@ const p = Path.createPath('/users/profile/:id');
 - `*splat`: for parameters spanning over multiple segments. Handle with care
 - `?param1&param2` or `?:param1&:param2`: for query parameters. Colons `:` are optional.
 - `?param1=a&param1=b` will result in `{param1: ['a', 'b']}`
-- `?param1[]=a` and `?param1[]=a&param1[]=b` will result respectively in `{param1: ['a']}` and `{param1: ['a', 'b']}`
 
-## Parameter constraints
+### Parameter constraints
 
 For URL parameters and matrix parameters, you can add a constraint in the form of a regular expression.
 Note that back slashes have to be escaped.
@@ -64,13 +63,13 @@ path.build({id: 'not-a-number'}, {ignoreConstraints: true}); // => '/users/profi
 ## Optional trailing slashes
 
 `.test(path, options)` accepts an option object:
-- `trailingSlash`: if truthy, it will make trailing slashes optional (default to `true`).
+- `strictTrailingSlash`: whether or not trailing slashes are optional (default to `false`).
 
 ```javascript
 var path = new Path('/my-path');
 
-path.test('/my-path/')       // => null
-path.test('/my-path/', { trailingSlash: true }) // => {}
+path.test('/my-path/') // => {}
+path.test('/my-path/', { strictTrailingSlash: true }) // => null
 ```
 
 ## Partial test with delimiters
@@ -84,6 +83,19 @@ var path = new Path('/my-path');
 path.partialTest('/my-path/extended')       // => {}
 path.partialTest('/my-path-extended')       // => null
 path.partialTest('/my-path-extended', { delimited: false }) // => {}
+```
+
+## Query parameters
+
+Query parameters are handled by [search-params](https://github.com/rcs/search-params). `test`, `partialTest` and `build` accept [search-params options](https://github.com/troch/search-params#options).
+
+```js
+path.build(params, {
+    queryParams: {
+        arrayFormat: 'index',
+        booleanFormat: 'none'
+    }
+});
 ```
 
 ## Related modules

@@ -62,11 +62,15 @@ describe('Path', function() {
             .test('/users?offset=31&offset=30&limit=15')
             .should.eql({ offset: ['31', '30'], limit: '15' })
         path
-            .test('/users?offset&limit=15')
-            .should.eql({ offset: true, limit: '15' })
+            .test('/users?offset=1&limit=15')
+            .should.eql({ offset: '1', limit: '15' })
         path.test('/users?limit=15').should.eql({ limit: '15' })
         path.test('/users?limit=15').should.eql({ limit: '15' })
-        path.partialTest('/users?offset&limits=1').should.eql({ offset: true })
+        path
+            .partialTest('/users?offset=true&limits=1', {
+                queryParams: { booleanFormat: 'string' }
+            })
+            .should.eql({ offset: true })
         path
             .partialTest('/users?offset=1&offset=2%202&limits=1')
             .should.eql({ offset: ['1', '2 2'] })
@@ -91,7 +95,7 @@ describe('Path', function() {
             .should.equal('/users?offset=31&limit=false')
         path
             .build({ offset: 31, limit: true })
-            .should.equal('/users?offset=31&limit')
+            .should.equal('/users?offset=31&limit=true')
         path
             .build({ offset: [31, 30], limit: false })
             .should.equal('/users?offset=31&offset=30&limit=false')
@@ -101,12 +105,18 @@ describe('Path', function() {
     })
 
     it('should match and build paths of query parameters with square brackets', function() {
-        const path = new Path('/users?offset&limit[]')
+        const path = new Path('/users?offset&limit')
         path
-            .build({ offset: 31, limit: ['15'] })
+            .build(
+                { offset: 31, limit: ['15'] },
+                { queryParams: { arrayFormat: 'brackets' } }
+            )
             .should.equal('/users?offset=31&limit[]=15')
         path
-            .build({ offset: 31, limit: ['15', '16'] })
+            .build(
+                { offset: 31, limit: ['15', '16'] },
+                { queryParams: { arrayFormat: 'brackets' } }
+            )
             .should.equal('/users?offset=31&limit[]=15&limit[]=16')
 
         path

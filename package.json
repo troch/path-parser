@@ -21,7 +21,7 @@
             "tslint",
             "git add"
         ],
-        "*.js": [
+        "test/*.js": [
             "prettier --write",
             "git add"
         ]

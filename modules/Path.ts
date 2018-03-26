@@ -11,7 +11,11 @@ const identity = (_: any): any => _
 const exists = val => val !== undefined && val !== null
 
 const optTrailingSlash = (source, strictTrailingSlash) => {
-    if (!strictTrailingSlash) {
+    if (strictTrailingSlash) {
+        return source
+    }
+
+    if (source === '\\/') {
         return source
     }
 

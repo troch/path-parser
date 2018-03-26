@@ -1,3 +1,13 @@
+<a name="4.0.1"></a>
+## [4.0.1](https://github.com/troch/path-parser/compare/v4.0.0...v4.0.1) (2018-03-26)
+
+
+### Bug Fixes
+
+* fix matching with strictTrailingSlash option ([353ecc0](https://github.com/troch/path-parser/commit/353ecc0))
+
+
+
 <a name="4.0.0"></a>
 # [4.0.0](https://github.com/troch/path-parser/compare/v3.0.1...v4.0.0) (2018-03-25)
 

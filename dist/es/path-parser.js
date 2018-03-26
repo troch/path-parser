@@ -97,7 +97,10 @@ var tokenise = function (str, tokens) {
 var identity = function (_) { return _; };
 var exists = function (val) { return val !== undefined && val !== null; };
 var optTrailingSlash = function (source, strictTrailingSlash) {
-    if (!strictTrailingSlash) {
+    if (strictTrailingSlash) {
+        return source;
+    }
+    if (source === '\\/') {
         return source;
     }
     return source.replace(/\\\/$/, '') + '(?:\\/)?';

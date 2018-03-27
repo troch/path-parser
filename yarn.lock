@@ -2572,9 +2572,9 @@ sax@^1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
 
-search-params@2.1.1:
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/search-params/-/search-params-2.1.1.tgz#25a6da0b4c0ad1745d42235475150f3c04da8301"
+search-params@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/search-params/-/search-params-2.1.2.tgz#e0107b7e6f2e973d7991b8fbffc8b6664bc96edd"
 
 "semver@2 || 3 || 4 || 5", semver@^5.3.0, semver@^5.5.0:
   version "5.5.0"

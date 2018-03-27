@@ -1,11 +1,11 @@
 {
     "name": "path-parser",
-    "version": "4.0.1",
+    "version": "4.0.2",
     "description": "A small utility to parse, match and generate paths",
     "main": "dist/cjs/path-parser.js",
     "jsnext:main": "dist/es/path-parser.js",
     "module": "dist/es/path-parser.js",
-    "side-effects": false,
+    "sideEffects": false,
     "typings": "./typings/index.d.ts",
     "scripts": {
         "test": "mocha -r ts-node/register 'test/main.js'",
@@ -62,6 +62,6 @@
         "typescript": "~2.7.2"
     },
     "dependencies": {
-        "search-params": "2.1.1"
+        "search-params": "2.1.2"
     }
 }

@@ -16,7 +16,7 @@ export interface IBuildOptions {
     queryParams?: IOptions;
 }
 export declare type TestMatch = object | null;
-export default class Path {
+export declare class Path {
     static createPath(path: any): Path;
     path: string;
     tokens: IToken[];
@@ -37,3 +37,4 @@ export default class Path {
     private getParams(type);
     private urlTest(path, source, {caseSensitive}?);
 }
+export default Path;

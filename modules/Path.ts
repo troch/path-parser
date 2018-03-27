@@ -64,7 +64,7 @@ export interface IBuildOptions {
 
 export type TestMatch = object | null
 
-export default class Path {
+export class Path {
     public static createPath(path) {
         return new Path(path)
     }
@@ -292,3 +292,5 @@ export default class Path {
             }, {})
     }
 }
+
+export default Path

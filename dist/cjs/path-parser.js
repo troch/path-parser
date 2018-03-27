@@ -1,5 +1,7 @@
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var searchParams = require('search-params');
 
 /*! *****************************************************************************
@@ -297,4 +299,5 @@ var Path = /** @class */ (function () {
     return Path;
 }());
 
-module.exports = Path;
+exports.Path = Path;
+exports.default = Path;

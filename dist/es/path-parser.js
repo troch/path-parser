@@ -296,3 +296,4 @@ var Path = /** @class */ (function () {
 }());
 
 export default Path;
+export { Path };

@@ -6,7 +6,7 @@
     "jsnext:main": "dist/es/path-parser.js",
     "module": "dist/es/path-parser.js",
     "sideEffects": false,
-    "typings": "./typings/index.d.ts",
+    "typings": "./typings/Path.d.ts",
     "scripts": {
         "test": "mocha -r ts-node/register 'test/main.js'",
         "lint": "tslint modules/*.ts",

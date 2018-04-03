@@ -1,3 +1,13 @@
+<a name="4.0.3"></a>
+## [4.0.3](https://github.com/troch/path-parser/compare/v4.0.2...v4.0.3) (2018-04-03)
+
+
+### Bug Fixes
+
+* properly link types ([b7473e9](https://github.com/troch/path-parser/commit/b7473e9))
+
+
+
 <a name="4.0.2"></a>
 ## [4.0.2](https://github.com/troch/path-parser/compare/v4.0.1...v4.0.2) (2018-03-27)
 

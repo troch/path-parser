@@ -1,6 +1,6 @@
 {
     "name": "path-parser",
-    "version": "4.0.3",
+    "version": "4.0.4",
     "description": "A small utility to parse, match and generate paths",
     "main": "dist/cjs/path-parser.js",
     "jsnext:main": "dist/es/path-parser.js",

@@ -1,3 +1,13 @@
+<a name="4.0.4"></a>
+## [4.0.4](https://github.com/troch/path-parser/compare/v4.0.3...v4.0.4) (2018-04-09)
+
+
+### Bug Fixes
+
+* match pipe characters in parameters (Firefox) ([d6e6d27](https://github.com/troch/path-parser/commit/d6e6d27))
+
+
+
 <a name="4.0.3"></a>
 ## [4.0.3](https://github.com/troch/path-parser/compare/v4.0.2...v4.0.3) (2018-04-03)
 

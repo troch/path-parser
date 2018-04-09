@@ -24,7 +24,7 @@ var __assign = Object.assign || function __assign(t) {
 };
 
 var defaultOrConstrained = function (match) {
-    return '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':]+") + ')';
+    return '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':|]+") + ')';
 };
 var rules = [
     {

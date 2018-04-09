@@ -3,6 +3,7 @@
         "target": "es5",
         "declaration": true,
         "declarationDir": "./typings",
+        "esModuleInterop": true,
         "outDir": "./temp",
         "lib": [
             "es2015"

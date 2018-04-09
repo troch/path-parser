@@ -4,7 +4,8 @@ export default ['es', 'cjs'].map(format => ({
     input: 'modules/Path.ts',
     plugins: [
         typescript({
-            useTsconfigDeclarationDir: true
+            useTsconfigDeclarationDir: true,
+            clean: true
         })
     ],
     output: {

@@ -12,6 +12,8 @@ It is used by [route-node](https://github.com/troch/route-node)
 
 ```javascript
 import Path from 'path-parser'
+// or
+const Path = require('path-parser').default
 
 const path = new Path('/users/:id')
 

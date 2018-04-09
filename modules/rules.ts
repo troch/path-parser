@@ -1,5 +1,5 @@
 export const defaultOrConstrained = (match: string): string =>
-    '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':]+") + ')'
+    '(' + (match ? match.replace(/(^<|>$)/g, '') : "[a-zA-Z0-9-_.~%':|]+") + ')'
 
 export type RegExpFactory = (match: any) => RegExp
 

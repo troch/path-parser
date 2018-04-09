@@ -272,4 +272,12 @@ describe('Path', function() {
         path.test('/Test').should.eql({})
         should.not.exist(path.test('/TEST', { caseSensitive: true }))
     })
+
+    it('should match unencoded pipes (Firefox)', () => {
+        const path = new Path('/test/:param')
+
+        path.test('/test/1|2').should.eql({
+            param: '1|2'
+        })
+    })
 })

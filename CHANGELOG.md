@@ -1,3 +1,13 @@
+<a name="4.1.0"></a>
+# [4.1.0](https://github.com/troch/path-parser/compare/v4.0.5...v4.1.0) (2018-05-14)
+
+
+### Features
+
+* support  sign in parameters ([adc36b0](https://github.com/troch/path-parser/commit/adc36b0))
+
+
+
 <a name="4.0.5"></a>
 ## [4.0.5](https://github.com/troch/path-parser/compare/v4.0.4...v4.0.5) (2018-05-14)
 

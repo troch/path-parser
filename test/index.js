@@ -5,30 +5,24 @@ const should = require('should')
 
 require('mocha')
 
-describe('Path', function() {
-    it('should throw an error when instanciated without parameter', function() {
-        ;(function() {
-            new Path()
-        }.should.throw())
+describe('Path', () => {
+    it('should throw an error when instantiated without parameter', () => {
+        should.throws(() => new Path())
     })
 
-    it('should throw an error if Path is used like a function', function() {
-        ;(function() {
-            Path()
-        }.should.throw())
+    it('should throw an error if Path is used like a function', () => {
+        should.throws(() => Path())
     })
 
-    it('should throw an error if a path cannot be tokenised', function() {
-        ;(function() {
-            new Path('/!#')
-        }.should.throw())
+    it('should throw an error if a path cannot be tokenised', () => {
+        should.throws(() => new Path('/!#'))
     })
 
-    it('should return a path if createPath is used', function() {
+    it('should return a path if createPath is used', () => {
         should.exist(Path.createPath('/users'))
     })
 
-    it('should match and build paths with url parameters', function() {
+    it('should match and build paths with url parameters', () => {
         const path = new Path('/users/profile/:id-:id2.html')
         // Successful match & partial match
         path
@@ -52,20 +46,16 @@ describe('Path', function() {
         ))
     })
 
-    it('should match and build paths with query parameters', function() {
+    it('should match and build paths with query parameters', () => {
         const path = new Path('/users?offset&limit')
         // Successful match & partial match
+        path.test('/users?limit=15').should.eql({ limit: '15' })
         path
             .test('/users?offset=31&limit=15')
             .should.eql({ offset: '31', limit: '15' })
         path
             .test('/users?offset=31&offset=30&limit=15')
             .should.eql({ offset: ['31', '30'], limit: '15' })
-        path
-            .test('/users?offset=1&limit=15')
-            .should.eql({ offset: '1', limit: '15' })
-        path.test('/users?limit=15').should.eql({ limit: '15' })
-        path.test('/users?limit=15').should.eql({ limit: '15' })
         path
             .partialTest('/users?offset=true&limits=1', {
                 queryParams: { booleanFormat: 'string' }
@@ -104,7 +94,7 @@ describe('Path', function() {
             .should.equal('/users')
     })
 
-    it('should match and build paths of query parameters with square brackets', function() {
+    it('should match and build paths of query parameters with square brackets', () => {
         const path = new Path('/users?offset&limit')
         path
             .build(
@@ -127,7 +117,7 @@ describe('Path', function() {
             .should.eql({ offset: '31', limit: ['15', '16'] })
     })
 
-    it('should match and build paths with url and query parameters', function() {
+    it('should match and build paths with url and query parameters', () => {
         const path = new Path('/users/profile/:id-:id2?:id3')
         path.hasQueryParams.should.be.true
         // Successful match & partial match
@@ -146,7 +136,7 @@ describe('Path', function() {
             .should.equal('/users/profile/123-456?id3=789')
     })
 
-    it('should match and build paths with splat parameters', function() {
+    it('should match and build paths with splat parameters', () => {
         const path = new Path('/users/*splat')
         path.hasSpatParam.should.be.true
         // Successful match
@@ -158,7 +148,7 @@ describe('Path', function() {
         path.build({ splat: 'profile/123' }).should.equal('/users/profile/123')
     })
 
-    it('should match and build paths with splat and url parameters', function() {
+    it('should match and build paths with splat and url parameters', () => {
         const path = new Path('/users/*splat/view/:id')
         path.hasSpatParam.should.be.true
         // Successful match
@@ -170,7 +160,7 @@ describe('Path', function() {
             .should.eql({ splat: 'admin/manage', id: '123' })
     })
 
-    it('should match and build paths with url, splat and query parameters', function() {
+    it('should match and build paths with url, splat and query parameters', () => {
         const path = new Path('/:section/*splat?id')
         path.hasSpatParam.should.be.true
         // Successful match
@@ -182,7 +172,7 @@ describe('Path', function() {
             .should.equal('/users/profile/view?id=123')
     })
 
-    it('should match and build paths with matrix parameters', function() {
+    it('should match and build paths with matrix parameters', () => {
         const path = new Path('/users/;section;id')
         path.hasMatrixParams.should.be.true
         // Build path
@@ -195,7 +185,7 @@ describe('Path', function() {
             .should.eql({ section: 'profile', id: '123' })
     })
 
-    it('should match and build paths with constrained parameters', function() {
+    it('should match and build paths with constrained parameters', () => {
         let path = new Path('/users/:id<\\d+>')
         // Build path
         path.build({ id: 99 }).should.equal('/users/99')
@@ -220,7 +210,7 @@ describe('Path', function() {
         should.not.exist(path.test('/users;id=Z12345'))
     })
 
-    it('should match paths with optional trailing slashes', function() {
+    it('should match paths with optional trailing slashes', () => {
         let path = new Path('/my-path')
         should.not.exist(path.test('/my-path/', { strictTrailingSlash: true }))
         path.test('/my-path/', { strictTrailingSlash: false }).should.eql({})
@@ -235,19 +225,19 @@ describe('Path', function() {
         path.test('/', { strictTrailingSlash: true }).should.eql({})
     })
 
-    it('should match paths with encoded values', function() {
+    it('should match paths with encoded values', () => {
         const path = new Path('/test/:id')
 
         path.partialTest('/test/%7B123-456%7D').should.eql({ id: '{123-456}' })
     })
 
-    it('should encoded values and build paths', function() {
+    it('should encoded values and build paths', () => {
         const path = new Path('/test/:id')
 
         path.build({ id: '{123-456}' }).should.equal('/test/%7B123-456%7D')
     })
 
-    it('should partial match up to a delimiter', function() {
+    it('should partial match up to a delimiter', () => {
         const path = new Path('/univers')
 
         should.not.exist(path.partialTest('/university'))
@@ -255,7 +245,7 @@ describe('Path', function() {
         path.partialTest('/univers/hello').should.eql({})
     })
 
-    it('should match with special characters in path', function() {
+    it('should match with special characters in path', () => {
         const path = new Path('/test/:name/test2')
 
         path.partialTest('/test/he:re/test2').should.eql({ name: 'he:re' })

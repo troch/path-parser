@@ -8,7 +8,7 @@
     "sideEffects": false,
     "typings": "./typings/Path.d.ts",
     "scripts": {
-        "test": "mocha -r ts-node/register 'test/main.js'",
+        "test": "mocha -r ts-node/register 'test/*.js'",
         "lint": "tslint modules/*.ts",
         "build": "npm run clean && rollup -c rollup.config.js",
         "clean": "rimraf dist && rimraf temp",

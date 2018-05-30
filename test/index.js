@@ -39,11 +39,10 @@ describe('Path', () => {
         path
             .build({ id: '123', id2: 'abc' })
             .should.equal('/users/profile/123-abc.html')
-        ;(function() {
-            path.build({ id: '123' })
-        }.should.throw(
+        should.throws(
+            () => path.build({ id: '123' }),
             "Cannot build path: '/users/profile/:id-:id2.html' requires missing parameters { id2 }"
-        ))
+        )
     })
 
     it('should match and build paths with query parameters', () => {
@@ -197,9 +196,7 @@ describe('Path', () => {
         // Build path
         path.build({ id: 'A76FE4' }).should.equal('/users/;id=A76FE4')
         // Error because of incorrect parameter format
-        ;(function() {
-            path.build({ id: 'incorrect-param' })
-        }.should.throw())
+        should.throws(() => path.build({ id: 'incorrect-param' }))
         // Force
         path
             .build({ id: 'fake' }, { ignoreConstraints: true })

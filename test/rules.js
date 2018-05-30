@@ -18,11 +18,11 @@ describe('Rules', () => {
         })
         it('should replace undefined match with default pattern', () => {
             defaultOrConstrained(undefined).should.equal(
-                "([a-zA-Z0-9-_.~%':|]+)"
+                "([a-zA-Z0-9-_.~%':|=+]+)"
             )
         })
         it('should replace null match with default pattern', () => {
-            defaultOrConstrained(null).should.equal("([a-zA-Z0-9-_.~%':|]+)")
+            defaultOrConstrained(null).should.equal("([a-zA-Z0-9-_.~%':|=+]+)")
         })
     })
 
@@ -70,7 +70,7 @@ describe('Rules', () => {
             it('should return default matched pattern when match is not defined', () => {
                 rule
                     .regex([undefined, undefined, undefined, undefined])
-                    .should.eql(new RegExp("([a-zA-Z0-9-_.~%':|]+)"))
+                    .should.eql(new RegExp("([a-zA-Z0-9-_.~%':|=+]+)"))
             })
             it('should return matched pattern when match is defined', () => {
                 rule
@@ -147,7 +147,7 @@ describe('Rules', () => {
             it('should return default matched pattern when match is not defined', () => {
                 rule
                     .regex([';_aT10', '_aT10', undefined, undefined])
-                    .should.eql(new RegExp(";_aT10=([a-zA-Z0-9-_.~%':|]+)"))
+                    .should.eql(new RegExp(";_aT10=([a-zA-Z0-9-_.~%':|=+]+)"))
             })
             it('should return matched pattern when match is defined', () => {
                 rule

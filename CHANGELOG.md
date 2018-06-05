@@ -1,3 +1,13 @@
+<a name="4.1.1"></a>
+## [4.1.1](https://github.com/troch/path-parser/compare/v4.1.0...v4.1.1) (2018-06-05)
+
+
+### Bug Fixes
+
+* update search-params to decode unicode values when parsing ([f0c4396](https://github.com/troch/path-parser/commit/f0c4396))
+
+
+
 <a name="4.1.0"></a>
 # [4.1.0](https://github.com/troch/path-parser/compare/v4.0.5...v4.1.0) (2018-05-14)
 

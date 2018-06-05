@@ -62,6 +62,6 @@
         "typescript": "~2.7.2"
     },
     "dependencies": {
-        "search-params": "2.1.2"
+        "search-params": "2.1.3"
     }
 }

@@ -220,6 +220,14 @@ describe('Path', function() {
         should.not.exist(path.test('/users;id=Z12345'))
     })
 
+    it('should match and build paths with star (*) as a parameter value', function() {
+        const path = new Path('/test/:param')
+
+        path.build({ param: 'super*' }).should.equal('/test/super*')
+
+        path.test('/test/super*').should.eql({ param: 'super*' })
+    })
+
     it('should match paths with optional trailing slashes', function() {
         let path = new Path('/my-path')
         should.not.exist(path.test('/my-path/', { strictTrailingSlash: true }))

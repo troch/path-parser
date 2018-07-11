@@ -1,6 +1,6 @@
 {
     "name": "path-parser",
-    "version": "4.1.1",
+    "version": "4.2.0",
     "description": "A small utility to parse, match and generate paths",
     "main": "dist/cjs/path-parser.js",
     "jsnext:main": "dist/es/path-parser.js",
@@ -47,6 +47,7 @@
     "homepage": "https://github.com/troch/path-parser",
     "devDependencies": {
         "conventional-changelog": "~1.1.18",
+        "conventional-changelog-cli": "~2.0.1",
         "husky": "~0.14.3",
         "lint-staged": "~7.0.0",
         "mkdirp": "~0.5.1",

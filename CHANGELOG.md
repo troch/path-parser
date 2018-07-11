@@ -1,3 +1,14 @@
+<a name="4.2.0"></a>
+# [4.2.0](https://github.com/troch/path-parser/compare/v4.1.1...v4.2.0) (2018-07-11)
+
+
+### Features
+
+* allow star as a param value ([14bb91c](https://github.com/troch/path-parser/commit/14bb91c))
+* allow @ characters in path params ([d773d8e](https://github.com/troch/path-parser/commit/d773d8e))
+
+
+
 <a name="4.1.1"></a>
 ## [4.1.1](https://github.com/troch/path-parser/compare/v4.1.0...v4.1.1) (2018-06-05)
 

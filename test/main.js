@@ -292,8 +292,8 @@ describe('Path', function() {
     it('should support a wide range of characters', () => {
         const path = new Path('/test/:param')
 
-        path.test('/test/1+2=3').should.eql({
-            param: '1+2=3'
+        path.test('/test/1+2=3@*').should.eql({
+            param: '1+2=3@*'
         })
     })
 })

@@ -65,7 +65,6 @@ describe('Path', function() {
             .test('/users?offset=1&limit=15')
             .should.eql({ offset: '1', limit: '15' })
         path.test('/users?limit=15').should.eql({ limit: '15' })
-        path.test('/users?limit=15').should.eql({ limit: '15' })
         path
             .partialTest('/users?offset=true&limits=1', {
                 queryParams: { booleanFormat: 'string' }
@@ -137,7 +136,7 @@ describe('Path', function() {
         path
             .partialTest('/users/profile/123-456')
             .should.eql({ id: '123', id2: '456' })
-        // Un,successful match
+        // Unsuccessful match
         should.not.exist(path.test('/users/details/123-456'))
         should.not.exist(path.test('/users/profile/123-456?id3=789&id4=000'))
 
@@ -295,5 +294,24 @@ describe('Path', function() {
         path.test('/test/1+2=3@*').should.eql({
             param: '1+2=3@*'
         })
+    })
+
+    it('should match path and query params when query params are optional', function() {
+        const path = new Path('/users/profile/:id?name&surname')
+        // Successful match
+        path
+            .test('/users/profile/123', { optionalQueryParams: true })
+            .should.eql({ id: '123' })
+        path
+            .test('/users/profile/123?name=John&test=match', {
+                optionalQueryParams: true
+            })
+            .should.eql({ id: '123', name: 'John', test: 'match' })
+
+        // Unsuccessful match
+        should.not.exist(path.test('/users/profile/123'))
+        should.not.exist(
+            path.test('/users/profile/123', { optionalQueryParams: false })
+        )
     })
 })

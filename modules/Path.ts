@@ -62,7 +62,7 @@ export interface IBuildOptions {
     queryParams?: IOptions
 }
 
-export type TestMatch = object | null
+export type TestMatch = { [k: string]: string } | null
 
 export class Path {
     public static createPath(path) {

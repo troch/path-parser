@@ -146,9 +146,7 @@ export class Path {
         if (unexpectedQueryParams.length === 0) {
             // Extend url match
             Object.keys(queryParams).forEach(p => {
-                if (queryParams[p]) {
-                    match[p] = queryParams[p]
-                }
+                match[p] = queryParams[p]
             })
             return match
         }

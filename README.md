@@ -76,6 +76,7 @@ path.build({ id: '123' }) // => '/users/123'
 Test if the provided path matches the defined path template. Options available are:
 - `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'strictTrailingSlash'`: whether or not it should strictly match trailing slashes (default to `false`)
+- `'optionalQueryParams'`: whether or not it should match query params (default to `false`)
 - `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
 

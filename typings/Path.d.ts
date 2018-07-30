@@ -8,6 +8,7 @@ export interface IPartialTestOptions {
 export interface ITestOptions {
     caseSensitive?: boolean;
     strictTrailingSlash?: boolean;
+    optionalQueryParams?: boolean;
     queryParams?: IOptions;
 }
 export interface IBuildOptions {

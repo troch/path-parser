@@ -53,6 +53,7 @@ export interface IPartialTestOptions {
 export interface ITestOptions {
     caseSensitive?: boolean
     strictTrailingSlash?: boolean
+    optionalQueryParams?: boolean
     queryParams?: IOptions
 }
 
@@ -116,7 +117,12 @@ export class Path {
     }
 
     public test(path: string, opts?: ITestOptions): TestMatch {
-        const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
+        const options = {
+            strictTrailingSlash: false,
+            optionalQueryParams: false,
+            queryParams: {},
+            ...opts
+        }
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(
             this.source,
@@ -134,14 +140,14 @@ export class Path {
         }
         // Extract query params
         const queryParams = parseQueryParams(path, options.queryParams)
-        const unexpectedQueryParams = Object.keys(queryParams).filter(
-            p => !this.isQueryParam(p)
-        )
-
+        const unexpectedQueryParams = options.optionalQueryParams
+            ? []
+            : Object.keys(queryParams).filter(p => !this.isQueryParam(p))
         if (unexpectedQueryParams.length === 0) {
             // Extend url match
-            Object.keys(queryParams).forEach(p => (match[p] = queryParams[p]))
-
+            Object.keys(queryParams).forEach(p => {
+                match[p] = queryParams[p]
+            })
             return match
         }
 

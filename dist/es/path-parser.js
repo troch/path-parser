@@ -15,12 +15,15 @@ See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
 
-var __assign = Object.assign || function __assign(t) {
-    for (var s, i = 1, n = arguments.length; i < n; i++) {
-        s = arguments[i];
-        for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
-    }
-    return t;
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
 };
 
 var defaultOrConstrained = function (match) {
@@ -163,7 +166,7 @@ var Path = /** @class */ (function () {
     };
     Path.prototype.test = function (path, opts) {
         var _this = this;
-        var options = __assign({ strictTrailingSlash: false, queryParams: {} }, opts);
+        var options = __assign({ strictTrailingSlash: false, optionalQueryParams: false, queryParams: {} }, opts);
         // trailingSlash: falsy => non optional, truthy => optional
         var source = optTrailingSlash(this.source, options.strictTrailingSlash);
         // Check if exact match
@@ -174,10 +177,14 @@ var Path = /** @class */ (function () {
         }
         // Extract query params
         var queryParams = parse(path, options.queryParams);
-        var unexpectedQueryParams = Object.keys(queryParams).filter(function (p) { return !_this.isQueryParam(p); });
+        var unexpectedQueryParams = options.optionalQueryParams
+            ? []
+            : Object.keys(queryParams).filter(function (p) { return !_this.isQueryParam(p); });
         if (unexpectedQueryParams.length === 0) {
             // Extend url match
-            Object.keys(queryParams).forEach(function (p) { return (match[p] = queryParams[p]); });
+            Object.keys(queryParams).forEach(function (p) {
+                match[p] = queryParams[p];
+            });
             return match;
         }
         return null;

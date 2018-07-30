@@ -187,9 +187,7 @@ var Path = /** @class */ (function () {
         if (unexpectedQueryParams.length === 0) {
             // Extend url match
             Object.keys(queryParams).forEach(function (p) {
-                if (queryParams[p]) {
-                    match[p] = queryParams[p];
-                }
+                match[p] = queryParams[p];
             });
             return match;
         }

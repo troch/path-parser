@@ -62,9 +62,9 @@ export interface IBuildOptions {
     queryParams?: IOptions
 }
 
-export type TestMatch = object | null
+export type TestMatch<T> = T | null
 
-export class Path {
+export class Path<T extends object = {}> {
     public static createPath(path) {
         return new Path(path)
     }
@@ -115,7 +115,7 @@ export class Path {
         return this.queryParams.indexOf(name) !== -1
     }
 
-    public test(path: string, opts?: ITestOptions): TestMatch {
+    public test(path: string, opts?: ITestOptions): TestMatch<T> {
         const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
         // trailingSlash: falsy => non optional, truthy => optional
         const source = optTrailingSlash(
@@ -148,7 +148,7 @@ export class Path {
         return null
     }
 
-    public partialTest(path: string, opts?: IPartialTestOptions): TestMatch {
+    public partialTest(path: string, opts?: IPartialTestOptions): TestMatch<T> {
         const options = { delimited: true, queryParams: {}, ...opts }
         // Check if partial match (start of given path matches regex)
         // trailingSlash: falsy => non optional, truthy => optional
@@ -275,21 +275,21 @@ export class Path {
         path: string,
         source: string,
         { caseSensitive = false } = {}
-    ): TestMatch {
+    ): TestMatch<T> {
         const regex = new RegExp('^' + source, caseSensitive ? '' : 'i')
         const match = path.match(regex)
-        if (!match) {
+        if (!match || !this.urlParams.length) {
             return null
-        } else if (!this.urlParams.length) {
-            return {}
         }
+
         // Reduce named params to key-value pairs
-        return match
-            .slice(1, this.urlParams.length + 1)
-            .reduce((params, m, i) => {
+        return match.slice(1, this.urlParams.length + 1).reduce<T>(
+            (params, m, i) => {
                 params[this.urlParams[i]] = decodeURIComponent(m)
                 return params
-            }, {})
+            },
+            {} as T
+        )
     }
 }
 

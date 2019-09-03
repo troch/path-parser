@@ -284,16 +284,11 @@ var Path = /** @class */ (function () {
         var _b = (_a === void 0 ? {} : _a).caseSensitive, caseSensitive = _b === void 0 ? false : _b;
         var regex = new RegExp('^' + source, caseSensitive ? '' : 'i');
         var match = path.match(regex);
-        if (!match) {
+        if (!match || !this.urlParams.length) {
             return null;
         }
-        else if (!this.urlParams.length) {
-            return {};
-        }
         // Reduce named params to key-value pairs
-        return match
-            .slice(1, this.urlParams.length + 1)
-            .reduce(function (params, m, i) {
+        return match.slice(1, this.urlParams.length + 1).reduce(function (params, m, i) {
             params[_this.urlParams[i]] = decodeURIComponent(m);
             return params;
         }, {});

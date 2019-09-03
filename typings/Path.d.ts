@@ -15,9 +15,9 @@ export interface IBuildOptions {
     ignoreSearch?: boolean;
     queryParams?: IOptions;
 }
-export declare type TestMatch = object | null;
-export declare class Path {
-    static createPath(path: any): Path;
+export declare type TestMatch<T> = T | null;
+export declare class Path<T extends object = {}> {
+    static createPath(path: any): Path<{}>;
     path: string;
     tokens: IToken[];
     hasUrlParams: boolean;
@@ -31,8 +31,8 @@ export declare class Path {
     source: string;
     constructor(path: any);
     isQueryParam(name: string): boolean;
-    test(path: string, opts?: ITestOptions): TestMatch;
-    partialTest(path: string, opts?: IPartialTestOptions): TestMatch;
+    test(path: string, opts?: ITestOptions): TestMatch<T>;
+    partialTest(path: string, opts?: IPartialTestOptions): TestMatch<T>;
     build(params?: object, opts?: IBuildOptions): string;
     private getParams(type);
     private urlTest(path, source, {caseSensitive}?);

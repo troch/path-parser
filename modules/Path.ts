@@ -187,7 +187,7 @@ export class Path<T extends object = {}> {
                 }
 
                 const val = params[key]
-                const encode = this.isQueryParam(key) ? identity : encodeURI
+                const encode = this.isQueryParam(key) ? identity : encodeURIComponent
 
                 if (typeof val === 'boolean') {
                     acc[key] = val

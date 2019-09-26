@@ -216,7 +216,7 @@ var Path = /** @class */ (function () {
                 return acc;
             }
             var val = params[key];
-            var encode = _this.isQueryParam(key) ? identity : encodeURI;
+            var encode = _this.isQueryParam(key) ? identity : encodeURIComponent;
             if (typeof val === 'boolean') {
                 acc[key] = val;
             }

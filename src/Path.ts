@@ -33,7 +33,7 @@ const upToDelimiter = (source: string, delimiter?: boolean) => {
 const encodeSpatParam = (value: string) =>
   value
     .split('/')
-    .map(encodeURIComponent)
+    .map(encodeURI)
     .join('/')
 
 const appendQueryParam = (
@@ -204,7 +204,7 @@ export class Path {
           ? identity
           : this.isSpatParam(key)
           ? encodeSpatParam
-          : encodeURIComponent
+          : encodeURI
 
         if (typeof val === 'boolean') {
           acc[key] = val

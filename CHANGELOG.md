@@ -1,3 +1,14 @@
+## [5.0.1](https://github.com/troch/path-parser/compare/v5.0.0...v5.0.1) (2019-12-29)
+
+
+### Bug Fixes
+
+* Revert encoding fix ([c43c07e](https://github.com/troch/path-parser/commit/c43c07e1d89d9c324a84683be55d1634445f2a21))
+
+Note: not all cases were accounted for and the benefits of this fix is currently unclear.
+
+
+
 # [5.0.0](https://github.com/troch/path-parser/compare/v4.2.0...v5.0.0) (2019-12-29)
 
 

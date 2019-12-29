@@ -1,6 +1,6 @@
 {
   "name": "path-parser",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "A small utility to parse, match and generate paths",
   "license": "MIT",
   "main": "dist/index.js",

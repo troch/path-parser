@@ -1,15 +1,13 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "declaration": true,
-        "declarationDir": "./typings",
-        "esModuleInterop": true,
-        "outDir": "./temp",
-        "lib": [
-            "es2015"
-        ]
-    },
-    "include": [
-        "./modules/Path.ts"
-    ]
+  "compilerOptions": {
+    "target": "es5",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "esModuleInterop": true,
+    "outDir": "./dist",
+    "lib": ["es2015"],
+    "strict": true,
+    "alwaysStrict": false
+  },
+  "include": ["./src/index.ts"]
 }

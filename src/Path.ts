@@ -30,6 +30,12 @@ const upToDelimiter = (source: string, delimiter?: boolean) => {
   return /(\/)$/.test(source) ? source : source + '(\\/|\\?|\\.|;|$)'
 }
 
+const encodeSpatParam = (value: string) =>
+  value
+    .split('/')
+    .map(encodeURIComponent)
+    .join('/')
+
 const appendQueryParam = (
   params: Record<string, any>,
   param: string,
@@ -119,6 +125,10 @@ export class Path {
     return this.queryParams.indexOf(name) !== -1
   }
 
+  public isSpatParam(name: string): boolean {
+    return this.spatParams.indexOf(name) !== -1
+  }
+
   public test(path: string, opts?: ITestOptions): TestMatch {
     const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
     // trailingSlash: falsy => non optional, truthy => optional
@@ -190,7 +200,11 @@ export class Path {
         }
 
         const val = params[key]
-        const encode = this.isQueryParam(key) ? identity : encodeURI
+        const encode = this.isQueryParam(key)
+          ? identity
+          : this.isSpatParam(key)
+          ? encodeSpatParam
+          : encodeURIComponent
 
         if (typeof val === 'boolean') {
           acc[key] = val

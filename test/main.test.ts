@@ -260,7 +260,7 @@ describe('Path', function() {
     expect(path.partialTest('/test/%7B123-456%7D')).toEqual({ id: '{123-456}' })
   })
 
-  it('should encoded values and build paths', function() {
+  it('should encode values and build paths', function() {
     const path = new Path('/test/:id')
 
     expect(path.build({ id: '{123-456}' })).toBe('/test/%7B123-456%7D')
@@ -280,7 +280,6 @@ describe('Path', function() {
     expect(path.partialTest('/test/he:re/test2')).toEqual({ name: 'he:re' })
     expect(path.partialTest("/test/he're/test2")).toEqual({ name: "he're" })
 
-    expect(path.build({ name: 'he:re' })).toEqual('/test/he:re/test2')
     expect(path.build({ name: "he're" })).toEqual("/test/he're/test2")
   })
 

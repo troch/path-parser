@@ -1,3 +1,20 @@
+# [5.0.0](https://github.com/troch/path-parser/compare/v4.2.0...v5.0.0) (2019-12-29)
+
+
+### Bug Fixes
+
+* use encodeURIComponent to encode URL params ([#43](https://github.com/troch/path-parser/issues/43)) ([946d256](https://github.com/troch/path-parser/commit/946d2563a3cabe3b22fc14c679045ef8a8519821))
+
+
+### Maintenance
+
+* upgrade all dev dependencies ([#42](https://github.com/troch/path-parser/issues/42)) ([b294b17](https://github.com/troch/path-parser/commit/b294b17fdadd37db399469c10920eb1850652fd8))
+
+
+### BREAKING CHANGES
+
+* default export has been removed, now `Path` is only available as a named export.
+
 <a name="4.2.0"></a>
 # [4.2.0](https://github.com/troch/path-parser/compare/v4.1.1...v4.2.0) (2018-07-11)
 

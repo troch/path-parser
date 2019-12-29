@@ -1,4 +1,4 @@
-import rules, { IRule } from './rules'
+import rules from './rules'
 
 export interface IToken {
   type: string

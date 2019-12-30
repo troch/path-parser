@@ -5663,10 +5663,10 @@ sax@^1.2.4:
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
 
-search-params@2.1.3:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/search-params/-/search-params-2.1.3.tgz#90b98964eaf3d0edef0f73e6e8307d1480020413"
-  integrity sha512-hHxU9ZGWpZ/lrFBIHndSnQae2in7ra+m+tBSoeAahSWDDgOgpZqs4bfaTZpljgNgAgTbjiQoJtZW6FKSsfEcDA==
+search-params@3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/search-params/-/search-params-3.0.0.tgz#dbc7c243058e5a33ae1e9870be91f5aced4100d8"
+  integrity sha512-8CYNl/bjkEhXWbDTU/K7c2jQtrnqEffIPyOLMqygW/7/b+ym8UtQumcAZjOfMLjZKR6AxK5tOr9fChbQZCzPqg==
 
 semver-compare@^1.0.0:
   version "1.0.0"

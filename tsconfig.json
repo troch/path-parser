@@ -7,7 +7,8 @@
     "outDir": "./dist",
     "lib": ["es2015"],
     "strict": true,
-    "alwaysStrict": false
+    "alwaysStrict": false,
+    "importHelpers": false
   },
-  "include": ["./src/index.ts"]
+  "include": ["src", "test"]
 }

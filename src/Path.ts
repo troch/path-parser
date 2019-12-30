@@ -72,11 +72,15 @@ export interface IBuildOptions {
   queryParams?: IOptions
 }
 
-export type TestMatch = Record<string, any> | null
+export type TestMatch<
+  T extends Record<string, any> = Record<string, any>
+> = T | null
 
-export class Path {
-  public static createPath(path: string) {
-    return new Path(path)
+export class Path<T extends Record<string, any> = Record<string, any>> {
+  public static createPath<T extends Record<string, any> = Record<string, any>>(
+    path: string
+  ) {
+    return new Path<T>(path)
   }
 
   public path: string
@@ -129,7 +133,7 @@ export class Path {
     return this.spatParams.indexOf(name) !== -1
   }
 
-  public test(path: string, opts?: ITestOptions): TestMatch {
+  public test(path: string, opts?: ITestOptions): TestMatch<T> {
     const options = { strictTrailingSlash: false, queryParams: {}, ...opts }
     // trailingSlash: falsy => non optional, truthy => optional
     const source = optTrailingSlash(this.source, options.strictTrailingSlash)
@@ -152,6 +156,7 @@ export class Path {
     if (unexpectedQueryParams.length === 0) {
       // Extend url match
       Object.keys(queryParams).forEach(
+        // @ts-ignore
         p => (match[p] = (queryParams as any)[p])
       )
 
@@ -161,7 +166,7 @@ export class Path {
     return null
   }
 
-  public partialTest(path: string, opts?: IPartialTestOptions): TestMatch {
+  public partialTest(path: string, opts?: IPartialTestOptions): TestMatch<T> {
     const options = { delimited: true, queryParams: {}, ...opts }
     // Check if partial match (start of given path matches regex)
     // trailingSlash: falsy => non optional, truthy => optional
@@ -287,13 +292,13 @@ export class Path {
     path: string,
     source: string,
     caseSensitive = false
-  ): TestMatch {
+  ): TestMatch<T> {
     const regex = new RegExp('^' + source, caseSensitive ? '' : 'i')
     const match = path.match(regex)
     if (!match) {
       return null
     } else if (!this.urlParams.length) {
-      return {}
+      return {} as T
     }
     // Reduce named params to key-value pairs
     return match
@@ -301,7 +306,7 @@ export class Path {
       .reduce<Record<string, any>>((params, m, i) => {
         params[this.urlParams[i]] = decodeURIComponent(m)
         return params
-      }, {})
+      }, {}) as T
   }
 }
 

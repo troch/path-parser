@@ -15,13 +15,13 @@
     "start": "tsdx watch",
     "build": "tsdx build",
     "test": "tsdx test",
-    "lint": "tsdx lint",
+    "lint": "tsdx lint src test",
     "prepare": "tsdx build",
     "clog": "conventional-changelog -p angular -i CHANGELOG.md -s"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "tsdx lint"
+      "pre-commit": "tsdx lint src test"
     }
   },
   "author": "Thomas Roch",

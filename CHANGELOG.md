@@ -1,3 +1,16 @@
+# [5.1.0](https://github.com/troch/path-parser/compare/v5.0.1...v5.1.0) (2019-12-30)
+
+
+### Features
+
+* add generic type to `Path` ([#45](https://github.com/troch/path-parser/issues/45)) ([33eaed2](https://github.com/troch/path-parser/commit/33eaed2857fb4bd5b28dd504231af23f0b9ba547))
+* Update `search-params` to latest version
+
+### Bug Fixes
+
+* Fix missing dependency `tslib`
+
+
 ## [5.0.1](https://github.com/troch/path-parser/compare/v5.0.0...v5.0.1) (2019-12-29)
 
 

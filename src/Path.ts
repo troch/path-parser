@@ -3,10 +3,10 @@ import {
   IOptions,
   parse as parseQueryParams
 } from 'search-params'
+
+import { encodeParam } from './encoding'
 import { defaultOrConstrained } from './rules'
 import tokenise, { IToken } from './tokeniser'
-
-const identity = (_: any): any => _
 
 const exists = (val: any) => val !== undefined && val !== null
 
@@ -29,12 +29,6 @@ const upToDelimiter = (source: string, delimiter?: boolean) => {
 
   return /(\/)$/.test(source) ? source : source + '(\\/|\\?|\\.|;|$)'
 }
-
-const encodeSpatParam = (value: string) =>
-  value
-    .split('/')
-    .map(encodeURI)
-    .join('/')
 
 const appendQueryParam = (
   params: Record<string, any>,
@@ -205,18 +199,14 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
         }
 
         const val = params[key]
-        const encode = this.isQueryParam(key)
-          ? identity
-          : this.isSpatParam(key)
-          ? encodeSpatParam
-          : encodeURI
+        const isSpatParam = this.isSpatParam(key)
 
         if (typeof val === 'boolean') {
           acc[key] = val
         } else if (Array.isArray(val)) {
-          acc[key] = val.map(encode)
+          acc[key] = val.map(v => encodeParam(v, isSpatParam))
         } else {
-          acc[key] = encode(val)
+          acc[key] = encodeParam(val, isSpatParam)
         }
 
         return acc

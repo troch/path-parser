@@ -15,19 +15,50 @@
 
 const excludeSubDelimiters = /[^!'()*+,;:]/g
 
-export const encodeExcludingSubDelims = (segment: string): string =>
+export type URLParamsEncodingType = 'default' | 'uri' | 'uriComponent' | 'none'
+
+export const encodeURIComponentExcludingSubDelims = (segment: string): string =>
   segment.replace(excludeSubDelimiters, match => encodeURIComponent(match))
 
+const encodingMethods: Record<
+  URLParamsEncodingType,
+  (param: string) => string
+> = {
+  default: encodeURIComponentExcludingSubDelims,
+  uri: encodeURI,
+  uriComponent: encodeURIComponent,
+  none: (val: string) => val
+}
+
+const decodingMethods: Record<
+  URLParamsEncodingType,
+  (param: string) => string
+> = {
+  default: decodeURIComponent,
+  uri: decodeURI,
+  uriComponent: decodeURIComponent,
+  none: (val: string) => val
+}
+
 export const encodeParam = (
-  segment: string | number | boolean,
+  param: string | number | boolean,
+  encoding: URLParamsEncodingType,
   isSpatParam: boolean
 ): string => {
+  const encoder =
+    encodingMethods[encoding] || encodeURIComponentExcludingSubDelims
+
   if (isSpatParam) {
-    return String(segment)
+    return String(param)
       .split('/')
-      .map(encodeExcludingSubDelims)
+      .map(encoder)
       .join('/')
   }
 
-  return encodeExcludingSubDelims(String(segment))
+  return encoder(String(param))
 }
+
+export const decodeParam = (
+  param: string,
+  encoding: URLParamsEncodingType
+): string => (decodingMethods[encoding] || decodeURIComponent)(param)

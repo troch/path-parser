@@ -1,6 +1,6 @@
 import rules from './rules'
 
-export interface IToken {
+export interface Token {
   type: string
   match: string
   val: any
@@ -8,7 +8,7 @@ export interface IToken {
   regex?: RegExp
 }
 
-const tokenise = (str: string, tokens: IToken[] = []): IToken[] => {
+const tokenise = (str: string, tokens: Token[] = []): Token[] => {
   // Look for a matching rule
   const matched = rules.some(rule => {
     const match = str.match(rule.pattern)

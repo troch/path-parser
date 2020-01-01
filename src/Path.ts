@@ -63,7 +63,7 @@ export interface PartialTestOptions {
    *   - `'uri'`: use `encodeURI` for encoding URL parameters
    *   - `'none'`: no encoding
    */
-  urlParamsEncoding?: URLParamsEncodingType
+  urlParamsDecoding?: URLParamsEncodingType
 }
 
 export interface TestOptions {
@@ -79,7 +79,7 @@ export interface TestOptions {
    *   - `'uri'`: use `encodeURI` for encoding URL parameters
    *   - `'none'`: no encoding
    */
-  urlParamsEncoding?: URLParamsEncodingType
+  urlParamsDecoding?: URLParamsEncodingType
 }
 
 export interface BuildOptions {
@@ -92,7 +92,7 @@ export interface BuildOptions {
    *   - `'uri'`: `decodeURI`  is used
    *   - `'none'`: no decoding
    */
-  urlParamsDecoding?: URLParamsEncodingType
+  urlParamsEncoding?: URLParamsEncodingType
 }
 
 export type TestMatch<
@@ -161,7 +161,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       caseSensitive: false,
       strictTrailingSlash: false,
       queryParams: {},
-      urlParamsEncoding: 'default',
+      urlParamsDecoding: 'default',
       ...opts
     } as const
     // trailingSlash: falsy => non optional, truthy => optional
@@ -171,7 +171,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       path,
       source + (this.hasQueryParams ? '(\\?.*$|$)' : '$'),
       options.caseSensitive,
-      options.urlParamsEncoding
+      options.urlParamsDecoding
     )
     // If no match, or no query params, no need to go further
     if (!match || !this.hasQueryParams) {
@@ -201,7 +201,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       caseSensitive: false,
       delimited: true,
       queryParams: {},
-      urlParamsEncoding: 'default',
+      urlParamsDecoding: 'default',
       ...opts
     } as const
     // Check if partial match (start of given path matches regex)
@@ -211,7 +211,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       path,
       source,
       options.caseSensitive,
-      options.urlParamsEncoding
+      options.urlParamsDecoding
     )
 
     if (!match) {
@@ -231,12 +231,12 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     return match
   }
 
-  public build(params: Record<string, any> = {}, opts?: BuildOptions): string {
+  public build(params: T = {} as T, opts?: BuildOptions): string {
     const options = {
       ignoreConstraints: false,
       ignoreSearch: false,
       queryParams: {},
-      urlParamsDecoding: 'default',
+      urlParamsEncoding: 'default',
       ...opts
     } as const
     const encodedUrlParams = Object.keys(params)
@@ -253,10 +253,10 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
           acc[key] = val
         } else if (Array.isArray(val)) {
           acc[key] = val.map(v =>
-            encodeParam(v, options.urlParamsDecoding, isSpatParam)
+            encodeParam(v, options.urlParamsEncoding, isSpatParam)
           )
         } else {
-          acc[key] = encodeParam(val, options.urlParamsDecoding, isSpatParam)
+          acc[key] = encodeParam(val, options.urlParamsEncoding, isSpatParam)
         }
 
         return acc

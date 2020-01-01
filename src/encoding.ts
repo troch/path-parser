@@ -13,7 +13,7 @@
               / "*" / "+" / "," / ";" / "="
  */
 
-const excludeSubDelimiters = /[^!'()*+,;:]/g
+const excludeSubDelimiters = /[^!$'()*+,;|:]/g
 
 export type URLParamsEncodingType = 'default' | 'uri' | 'uriComponent' | 'none'
 

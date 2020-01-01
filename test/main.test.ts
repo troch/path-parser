@@ -306,4 +306,115 @@ describe('Path', function() {
       param: '1+2=3@*'
     })
   })
+
+  describe('default encoding', () => {
+    const path = new Path<{ param: string }>('/:param')
+
+    it('should build with correct encoding', () => {
+      expect(
+        path.build({
+          param: 'test$@'
+        })
+      ).toBe('/test$%40')
+    })
+
+    it('should match with correct decoding', () => {
+      expect(path.test('/test%24%40')).toEqual({
+        param: 'test$@'
+      })
+
+      expect(path.partialTest('/test$@')).toEqual({
+        param: 'test$@'
+      })
+    })
+  })
+
+  describe('uri encoding', () => {
+    const path = new Path('/:param')
+
+    it('should build with correct encoding', () => {
+      expect(
+        path.build(
+          {
+            param: 'test$@'
+          },
+          {
+            urlParamsEncoding: 'uriComponent'
+          }
+        )
+      ).toBe('/test%24%40')
+    })
+
+    it('should match with correct decoding', () => {
+      expect(
+        path.test('/test%24%40', {
+          urlParamsDecoding: 'uriComponent'
+        })
+      ).toEqual({
+        param: 'test$@'
+      })
+
+      expect(path.partialTest('/test$@')).toEqual({
+        param: 'test$@'
+      })
+    })
+  })
+
+  describe('uriComponent encoding', () => {
+    const path = new Path('/:param')
+
+    it('should build with correct encoding', () => {
+      expect(
+        path.build(
+          {
+            param: 'test$%'
+          },
+          {
+            urlParamsEncoding: 'uri'
+          }
+        )
+      ).toBe('/test$%25')
+    })
+
+    it('should match with correct decoding', () => {
+      expect(
+        path.test('/test$%25', {
+          urlParamsDecoding: 'uri'
+        })
+      ).toEqual({
+        param: 'test$%'
+      })
+
+      expect(path.partialTest('/test$@')).toEqual({
+        param: 'test$@'
+      })
+    })
+  })
+
+  describe('no encoding', () => {
+    const path = new Path('/:param')
+
+    it('should build with correct encoding', () => {
+      expect(
+        path.build(
+          {
+            param: 'test$%'
+          },
+          {
+            urlParamsEncoding: 'none'
+          }
+        )
+      ).toBe('/test$%')
+    })
+
+    it('should match with correct decoding', () => {
+      expect(
+        path.test('/test$%25', {
+          urlParamsDecoding: 'none'
+        })
+      ).toEqual({
+        param: 'test$%25'
+      })
+    })
+  })
 })

@@ -69,13 +69,31 @@ path.build({ id: '123' }) // => '/users/123'
 
 ## API
 
+### Constructor
+
+A path instance can be created two ways:
+
+- `new Path(path: string, opts?: object): object`
+- `Path.create(path: string, opts?: object): object`
+
+Options available are:
+
+- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
+- `'urlParamsEncoding`, to specify how URL parameters are encoded and decoded:
+  - `'default':`encodeURIComponent`and`decodeURIComponent`are used but some characters to encode and decode URL parameters, but some characters are preserved when encoding (sub-delimiters:`+`,`:`,`'`,`!`,`,`,`;`,`'\*'`).
+  - `'uriComponent'`: use `encodeURIComponent` and `decodeURIComponent`
+    for encoding and decoding URL parameters.
+  - `'uri'`: use `encodeURI` and `decodeURI for encoding amd decoding
+    URL parameters.
+  - `'none'`: no encoding or decoding is performed
+  - `'legacy'`: the approach for version 5.x and below (not recoomended)
+
 ### path.test(path: string, opts?: object): object | null;
 
 Test if the provided path matches the defined path template. Options available are:
 
 - `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'strictTrailingSlash'`: whether or not it should strictly match trailing slashes (default to `false`)
-- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
 ### path.partialTest(path: string, opts?: object): object | null;
 
@@ -83,16 +101,14 @@ Test if the provided path is partially matched (starts with) the defined path te
 
 - `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'delimited'`: whether or not a partial match should only be successful if it reaches a delimiter (`/`, `?`, `.` and `;`). Default to `true`.
-- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
 ### path.build(params?: object, opts?: object): string;
 
 Builds the defined path template with the provided parameters
 
+- `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'ignoreConstraints'`: whether or not to ignore parameter constraints (default to `false`)
 - `'ignoreSearch'`: whether or not to build query parameters (default to `false`)
-- `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
-- `'queryParams'`: [options for query parameters](https://github.com/troch/search-params#options)
 
 ## Related modules
 

@@ -15,7 +15,12 @@
 
 const excludeSubDelimiters = /[^!$'()*+,;|:]/g
 
-export type URLParamsEncodingType = 'default' | 'uri' | 'uriComponent' | 'none'
+export type URLParamsEncodingType =
+  | 'default'
+  | 'uri'
+  | 'uriComponent'
+  | 'none'
+  | 'legacy'
 
 export const encodeURIComponentExcludingSubDelims = (segment: string): string =>
   segment.replace(excludeSubDelimiters, match => encodeURIComponent(match))
@@ -27,7 +32,8 @@ const encodingMethods: Record<
   default: encodeURIComponentExcludingSubDelims,
   uri: encodeURI,
   uriComponent: encodeURIComponent,
-  none: (val: string) => val
+  none: val => val,
+  legacy: encodeURI
 }
 
 const decodingMethods: Record<
@@ -37,7 +43,8 @@ const decodingMethods: Record<
   default: decodeURIComponent,
   uri: decodeURI,
   uriComponent: decodeURIComponent,
-  none: (val: string) => val
+  none: val => val,
+  legacy: decodeURIComponent
 }
 
 export const encodeParam = (

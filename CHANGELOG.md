@@ -1,3 +1,18 @@
+# [6.0.0](https://github.com/troch/path-parser/compare/v5.1.0...v6.0.0) (2020-01-05)
+
+
+### Features
+
+* add option `urlParamsEncoding` for specifying encoding and decoding of URL params ([#46](https://github.com/troch/path-parser/issues/46)) ([eb8d728](https://github.com/troch/path-parser/commit/eb8d728f99afe5fe6fa1eee45562813a16dcf118))
+
+### BREAKING CHANGES
+
+* `queryParams` options from `build`, `test` and `partialTest` has been moved to `Path` constructor
+* The new `urlParamsEncoding` option changes the default encoding and decoding. See the README for available encoding and decoding methods.
+* Option interfaces have been renamed (`PathTestOptions`, `PathBuildOptions`, `PathPartialTestOptions`)
+
+
+
 # [5.1.0](https://github.com/troch/path-parser/compare/v5.0.1...v5.1.0) (2019-12-30)
 
 

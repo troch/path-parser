@@ -81,17 +81,17 @@ const defaultOptions: InternalPathOptions = {
   urlParamsEncoding: 'default'
 }
 
-export interface PathPartialTestOptions {
+export interface PathPartialTestOptions extends PathOptions {
   caseSensitive?: boolean
   delimited?: boolean
 }
 
-export interface PathTestOptions {
+export interface PathTestOptions extends PathOptions {
   caseSensitive?: boolean
   strictTrailingSlash?: boolean
 }
 
-export interface PathBuildOptions {
+export interface PathBuildOptions extends PathOptions {
   ignoreConstraints?: boolean
   ignoreSearch?: boolean
 }
@@ -167,6 +167,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     const options = {
       caseSensitive: false,
       strictTrailingSlash: false,
+      ...this.options,
       ...opts
     } as const
     // trailingSlash: falsy => non optional, truthy => optional
@@ -175,14 +176,15 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     const match = this.urlTest(
       path,
       source + (this.hasQueryParams ? '(\\?.*$|$)' : '$'),
-      options.caseSensitive
+      options.caseSensitive,
+      options.urlParamsEncoding
     )
     // If no match, or no query params, no need to go further
     if (!match || !this.hasQueryParams) {
       return match
     }
     // Extract query params
-    const queryParams = parseQueryParams(path, this.options.queryParams)
+    const queryParams = parseQueryParams(path, options.queryParams)
     const unexpectedQueryParams = Object.keys(queryParams).filter(
       p => !this.isQueryParam(p)
     )
@@ -207,12 +209,18 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     const options = {
       caseSensitive: false,
       delimited: true,
+      ...this.options,
       ...opts
     } as const
     // Check if partial match (start of given path matches regex)
     // trailingSlash: falsy => non optional, truthy => optional
     const source = upToDelimiter(this.source, options.delimited)
-    const match = this.urlTest(path, source, options.caseSensitive)
+    const match = this.urlTest(
+      path,
+      source,
+      options.caseSensitive,
+      options.urlParamsEncoding
+    )
 
     if (!match) {
       return match
@@ -222,7 +230,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       return match
     }
 
-    const queryParams = parseQueryParams(path, this.options.queryParams)
+    const queryParams = parseQueryParams(path, options.queryParams)
 
     Object.keys(queryParams)
       .filter(p => this.isQueryParam(p))
@@ -236,7 +244,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       ignoreConstraints: false,
       ignoreSearch: false,
       queryParams: {},
-      urlParamsEncoding: 'default',
+      ...this.options,
       ...opts
     } as const
     const encodedUrlParams = Object.keys(params)
@@ -253,14 +261,10 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
           acc[key] = val
         } else if (Array.isArray(val)) {
           acc[key] = val.map(v =>
-            encodeParam(v, this.options.urlParamsEncoding, isSpatParam)
+            encodeParam(v, options.urlParamsEncoding, isSpatParam)
           )
         } else {
-          acc[key] = encodeParam(
-            val,
-            this.options.urlParamsEncoding,
-            isSpatParam
-          )
+          acc[key] = encodeParam(val, options.urlParamsEncoding, isSpatParam)
         }
 
         return acc
@@ -318,7 +322,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
         sparams[paramName] = params[paramName]
         return sparams
       }, {})
-    const searchPart = buildQueryParams(searchParams, this.options.queryParams)
+    const searchPart = buildQueryParams(searchParams, options.queryParams)
 
     return searchPart ? base + '?' + searchPart : base
   }
@@ -335,7 +339,8 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
   private urlTest(
     path: string,
     source: string,
-    caseSensitive: boolean
+    caseSensitive: boolean,
+    urlParamsEncoding: URLParamsEncodingType
   ): TestMatch<T> {
     const regex = new RegExp('^' + source, caseSensitive ? '' : 'i')
     const match = path.match(regex)
@@ -348,10 +353,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     return match
       .slice(1, this.urlParams.length + 1)
       .reduce<Record<string, any>>((params, m, i) => {
-        params[this.urlParams[i]] = decodeParam(
-          m,
-          this.options.urlParamsEncoding
-        )
+        params[this.urlParams[i]] = decodeParam(m, urlParamsEncoding)
         return params
       }, {}) as T
   }

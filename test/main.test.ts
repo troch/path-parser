@@ -287,6 +287,56 @@ describe('Path', () => {
     expect(path.test('/TEST', { caseSensitive: true })).toBeDefined()
   })
 
+  it('should be to overwrite options when building', () => {
+    const path = new Path<{ param: string; enabled?: boolean }>(
+      '/:param?enabled',
+      {
+        queryParams: {
+          booleanFormat: 'string'
+        },
+        urlParamsEncoding: 'uriComponent'
+      }
+    )
+
+    expect(path.build({ param: 'a+b', enabled: true })).toBe(
+      '/a%2Bb?enabled=true'
+    )
+    expect(
+      path.build(
+        { param: 'a+b', enabled: true },
+        {
+          queryParams: { booleanFormat: 'empty-true' },
+          urlParamsEncoding: 'default'
+        }
+      )
+    ).toBe('/a+b?enabled')
+  })
+
+  it('should be to overwrite options when matching', () => {
+    const path = new Path<{ param: string; enabled?: boolean }>(
+      '/:param?enabled',
+      {
+        queryParams: {
+          booleanFormat: 'string'
+        },
+        urlParamsEncoding: 'uriComponent'
+      }
+    )
+
+    expect(path.test('/a+b?enabled')).toEqual({
+      param: 'a+b',
+      enabled: null
+    })
+    expect(
+      path.test('/a+b?enabled', {
+        queryParams: { booleanFormat: 'empty-true' }
+      })
+    ).toEqual({
+      param: 'a+b',
+      enabled: true
+    })
+  })
+
   it('should match unencoded pipes (Firefox)', () => {
     const path = new Path('/test/:param')
 

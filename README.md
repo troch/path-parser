@@ -101,6 +101,8 @@ Test if the provided path is partially matched (starts with) the defined path te
 
 - `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'delimited'`: whether or not a partial match should only be successful if it reaches a delimiter (`/`, `?`, `.` and `;`). Default to `true`.
+- `'queryParams'`: to overwrite query parameter options (see above)
+- `'urlParamsEncoding`: to overwrite URL param encoding and decoding option (see above)
 
 ### path.build(params?: object, opts?: object): string;
 
@@ -109,6 +111,8 @@ Builds the defined path template with the provided parameters
 - `'caseSensitive'`: whether matching should be case sensitive or not (default to `false`)
 - `'ignoreConstraints'`: whether or not to ignore parameter constraints (default to `false`)
 - `'ignoreSearch'`: whether or not to build query parameters (default to `false`)
+- `'queryParams'`: to overwrite query parameter options (see above)
+- `'urlParamsEncoding`: to overwrite URL param encoding and decoding option (see above)
 
 ## Related modules
 

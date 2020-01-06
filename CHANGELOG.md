@@ -1,3 +1,12 @@
+# [6.1.0](https://github.com/troch/path-parser/compare/v6.0.0...v6.1.0) (2020-01-06)
+
+
+### Features
+
+* enable overwritting options on building and matching methods ([#47](https://github.com/troch/path-parser/issues/47)) ([605c7f9](https://github.com/troch/path-parser/commit/605c7f969dadd347033ce20f8e3d3d8416f31e44))
+
+This reverts a breaking change below.
+
 # [6.0.0](https://github.com/troch/path-parser/compare/v5.1.0...v6.0.0) (2020-01-05)
 
 

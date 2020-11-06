@@ -21,7 +21,7 @@ const tokenise = (str: string, tokens: Token[] = []): Token[] => {
       match: match[0],
       val: match.slice(1, 2),
       otherVal: match.slice(2),
-      regex: rule.regex instanceof Function ? rule.regex(match) : rule.regex
+      regex: typeof rule.regex === 'function' ? rule.regex(match) : rule.regex
     })
 
     if (match[0].length < str.length) {

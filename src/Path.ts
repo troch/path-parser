@@ -329,7 +329,7 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
 
   private getParams(type: string | RegExp): string[] {
     const predicate =
-      type instanceof RegExp
+      type.constructor.name === 'RegExp'
         ? (t: Token) => type.test(t.type)
         : (t: Token) => t.type === type
 

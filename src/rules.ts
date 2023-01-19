@@ -34,7 +34,7 @@ const rules: IRule[] = [
   },
   {
     name: 'query-parameter',
-    pattern: /^(?:\?|&)(?::)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})/
+    pattern: /^(?:\?|&)(?::)?([a-zA-Z0-9-_]*[a-zA-Z0-9]{1})(?:=([a-zA-Z0-9-_]+))?/
   },
   {
     name: 'delimiter',

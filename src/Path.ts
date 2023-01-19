@@ -50,6 +50,17 @@ const appendQueryParam = (
   return params
 }
 
+const selectStrictQueryParams = (tokens: Token[]) =>
+  tokens
+    .filter(t => /^query-parameter/.test(t.type))
+    .reduce<Record<string, string>>((acc, token) => {
+      if (token.otherVal[0]) {
+        acc[token.val[0] as string] = token.otherVal[0]
+      }
+
+      return acc
+    }, {})
+
 export interface PathOptions {
   /**
    * Query parameters buiding and matching options, see
@@ -185,21 +196,27 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
     }
     // Extract query params
     const queryParams = parseQueryParams(path, options.queryParams)
-    const unexpectedQueryParams = Object.keys(queryParams).filter(
+    const hasUnexpectedQueryParams = Object.keys(queryParams).some(
       p => !this.isQueryParam(p)
     )
 
-    if (unexpectedQueryParams.length === 0) {
-      // Extend url match
-      Object.keys(queryParams).forEach(
-        // @ts-ignore
-        p => (match[p] = (queryParams as any)[p])
-      )
+    const strictSearchParams = selectStrictQueryParams(this.tokens)
 
-      return match
+    const hasUnmatchedStrictQueryParam = Object.keys(queryParams).some(p =>
+      strictSearchParams[p] ? strictSearchParams[p] !== queryParams[p] : false
+    )
+
+    if (hasUnexpectedQueryParams || hasUnmatchedStrictQueryParam) {
+      return null
     }
 
-    return null
+    // Extend url match
+    Object.keys(queryParams).forEach(
+      // @ts-ignore
+      p => (match[p] = (queryParams as any)[p])
+    )
+
+    return match
   }
 
   public partialTest(
@@ -316,12 +333,17 @@ export class Path<T extends Record<string, any> = Record<string, any>> {
       return base
     }
 
+    const defaultSearchParams = selectStrictQueryParams(this.tokens)
+
     const searchParams = this.queryParams
-      .filter(p => Object.keys(params).indexOf(p) !== -1)
+      .filter(
+        p => Object.keys(params).indexOf(p) !== -1 || defaultSearchParams[p]
+      )
       .reduce<Record<string, any>>((sparams, paramName) => {
-        sparams[paramName] = params[paramName]
+        sparams[paramName] = params[paramName] || defaultSearchParams[paramName]
         return sparams
       }, {})
+
     const searchPart = buildQueryParams(searchParams, options.queryParams)
 
     return searchPart ? base + '?' + searchPart : base

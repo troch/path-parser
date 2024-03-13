@@ -13,8 +13,6 @@
               / "*" / "+" / "," / ";" / "="
  */
 
-const excludeSubDelimiters = /[^!$'()*+,;|:]/g
-
 export type URLParamsEncodingType =
   | 'default'
   | 'uri'
@@ -22,8 +20,24 @@ export type URLParamsEncodingType =
   | 'none'
   | 'legacy'
 
-export const encodeURIComponentExcludingSubDelims = (segment: string): string =>
-  segment.replace(excludeSubDelimiters, match => encodeURIComponent(match))
+export const encodeURIComponentExcludingSubDelims = (
+  segment: string
+): string => {
+  // Define sub-delimiters to exclude from encoding
+  const subDelimiters = /[!$'()*+,;|:]/g
+
+  // Use Array.from to correctly handle characters represented by surrogate pairs
+  return Array.from(segment)
+    .map(char => {
+      // Check if the character is a sub-delimiter
+      if (subDelimiters.test(char)) {
+        return char // Return the character as is if it's a sub-delimiter
+      } else {
+        return encodeURIComponent(char) // Otherwise, encode it
+      }
+    })
+    .join('') // Join the array back into a string
+}
 
 const encodingMethods: Record<
   URLParamsEncodingType,

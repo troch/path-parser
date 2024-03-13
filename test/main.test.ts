@@ -50,6 +50,17 @@ describe('Path', () => {
     )
   })
 
+  it('should match and build paths with emojis in query parameters', () => {
+    const pathA = new Path('/home?emoji')
+
+    expect(pathA.build({ emoji: '🤗' })).toEqual('/home?emoji=%F0%9F%A4%97')
+
+    const path = new Path('/home?emoji')
+    expect(path.test('/home?emoji=%F0%9F%99%8C')).toEqual({
+      emoji: '🙌'
+    })
+  })
+
   it('should match and build paths with query parameters', () => {
     const path = new Path('/users?offset&limit', {
       queryParams: { booleanFormat: 'string' }
